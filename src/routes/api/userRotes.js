@@ -7,8 +7,8 @@ const db = require('../../db');
 // Kunci rahasia untuk JWT (Ganti dengan kunci yang lebih aman)
 const SECRET_KEY = 'Sorong123barat';
 
-// Registrasi User (Membuat akun baru)
-router.post('/register', async (req, res) => {
+// Registrasi User (Membuat akun baru) REGISTER
+router.post('/users', async (req, res) => {
   const { user_id, image, fullname, email, password, contact, gender } = req.body;
 
   try {
@@ -16,7 +16,7 @@ router.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Simpan user ke database
-    const query = 'INSERT INTO user (user_id, image, fullname, email, password, contact, gender) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    const query = 'INSERT INTO users (user_id, image, fullname, email, password, contact, gender) VALUES (?, ?, ?, ?, ?, ?, ?)';
     db.query(query, [user_id, image, fullname, email, hashedPassword, contact, gender], (err, result) => {
       if (err) {
         console.error('Error inserting data:', err);
@@ -46,12 +46,12 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Login User (Mendapatkan token setelah login)
-router.post('/login', (req, res) => {
+// Login User (Mendapatkan token setelah login) LOGIN
+router.post('/auth/users', (req, res) => {
   const { email, password } = req.body;
 
   // Cek email di database
-  const query = 'SELECT * FROM user WHERE email = ?';
+  const query = 'SELECT * FROM users WHERE email = ?';
   db.query(query, [email], async (err, results) => {
     if (err) {
       console.error('Error fetching user:', err);
@@ -100,7 +100,7 @@ router.post('/login', (req, res) => {
 // Endpoint untuk menambahkan data user
 router.post('/user', (req, res) => {
   const { user_id, image, fullname, email, password, contact, gender } = req.body;
-  const query = 'INSERT INTO user (user_id, image, fullname, email, password, contact, gender) VALUES (?, ?, ?, ?, ?, ?, ?)';
+  const query = 'INSERT INTO users (user_id, image, fullname, email, password, contact, gender) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
   db.query(query, [user_id, image, fullname, email, password, contact, gender], (err, result) => {
     if (err) {
@@ -125,7 +125,7 @@ router.post('/user', (req, res) => {
 
 // Endpoint untuk mengambil semua data user
 router.get('/user', (req, res) => {
-  const query = 'SELECT * FROM user';
+  const query = 'SELECT * FROM users';
 
   db.query(query, (err, results) => {
     if (err) {
@@ -149,7 +149,7 @@ router.get('/user', (req, res) => {
 // Endpoint untuk mengambil data user berdasarkan ID
 router.get('/user/:id', (req, res) => {
   const userId = req.params.id;
-  const query = 'SELECT * FROM user WHERE user_id = ?';
+  const query = 'SELECT * FROM users WHERE user_id = ?';
 
   db.query(query, [userId], (err, results) => {
     if (err) {
@@ -184,7 +184,7 @@ router.get('/user/:id', (req, res) => {
 router.put('/user/:id', (req, res) => {
   const userId = req.params.id;
   const { image, fullname, email, password, contact, gender } = req.body;
-  const query = 'UPDATE user SET image = ?, fullname = ?, email = ?, password = ?, contact = ?, gender = ? WHERE user_id = ?';
+  const query = 'UPDATE users SET image = ?, fullname = ?, email = ?, password = ?, contact = ?, gender = ? WHERE user_id = ?';
 
   db.query(query, [image, fullname, email, password, contact, gender, userId], (err, result) => {
     if (err) {
@@ -217,7 +217,7 @@ router.put('/user/:id', (req, res) => {
 // Endpoint untuk menghapus data user
 router.delete('/user/:id', (req, res) => {
   const userId = req.params.id;
-  const query = 'DELETE FROM user WHERE user_id = ?';
+  const query = 'DELETE FROM users WHERE user_id = ?';
 
   db.query(query, [userId], (err, result) => {
     if (err) {
