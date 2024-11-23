@@ -1,6 +1,8 @@
 # TrackMate API Documentation
 
-# ENDPOINT
+# Account
+
+# Endpoint
 
 - Prodaction
 
@@ -14,7 +16,7 @@
 http://localhost:3000/
 ```
 
-# REGISTER
+# Register
 
 - Path
 
@@ -76,7 +78,7 @@ POST /user
 }
 ```
 
-# LOGIN
+# Login
 
 - Path
 
