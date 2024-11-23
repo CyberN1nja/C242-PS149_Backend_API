@@ -1,6 +1,7 @@
 const express = require('express');
-const userRoutes = require('./routes/userRotes'); // Impor rute
-const hMatRoutes = require('./routes/hMatRoutes'); // Impor rute
+const userRoutes = require('./routes/api/userRotes'); // Impor rute
+const hMatRoutes = require('./routes/api/hMatRoutes'); // Impor rute
+// const userAuth = require('./routes/models/auth');
 
 const app = express();
 app.use(express.json()); // Untuk parsing JSON body
@@ -11,6 +12,8 @@ app.use(express.json()); // Untuk parsing JSON body
 app.use('/', userRoutes);
 // rute healt matrics dari var hMatRoutes
 app.use('/', hMatRoutes);
+
+// app.use('/auth', userAuth);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
