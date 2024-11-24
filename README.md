@@ -149,7 +149,7 @@ Content-Type: application/json
 
 - Response
 
-```
+```json
 {
   "error": bool,
   "status": string,
