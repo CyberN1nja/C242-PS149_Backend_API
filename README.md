@@ -98,7 +98,7 @@ POST /auth/users
 
 - Example Body Request
 
-```
+```javascript
 {
   "email": "bamban@gmail.com",
   "password": "bambang321"
@@ -107,7 +107,7 @@ POST /auth/users
 
 - Response
 
-```
+```javascript
 {
   "error": bool,
   "status": string,
@@ -122,13 +122,13 @@ POST /auth/users
 
 - Example Response
 
-```
+```json
 {
   "error": false,
   "status": "success",
   "message": "Login berhasil",
   "data": {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjksImVtYWlsIjoiYmFtYmFuQGdtYWlsLmNvbSIsImlhdCI6MTczMjMzNzM2MSwiZXhwIjoxNzMyMzQwOTYxfQ.TVhBiKh28FV1DgolHT-oFZxZ0aHZ435pKhb-Sv_NFZI"
+    "token": ".....TVhBiKh28FV1DgolHT-oFZxZ0aHZ435pKhb-Sv_NFZI"
   }
 }
 ```
@@ -136,13 +136,13 @@ POST /auth/users
 
 - Path 
 
-```
+```http
 POST /auth/profile
 ```
 
 - Headers
 
-```
+```http
 Authorization: Bearer <access_token>
 Content-Type: application/json
 ```
