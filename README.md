@@ -20,7 +20,7 @@ http://localhost:3000/
 
 - Path
 
-```
+```http
 POST /user
 ```
 
