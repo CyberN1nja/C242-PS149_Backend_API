@@ -150,16 +150,16 @@ Content-Type: application/json
 
 ```
 {
-    "error": bool,
-    "status": string,
-    "message": string,
-    "data": {
-        "user_id": int,
-        "image": varchar,
-        "fullname": varchar,
-        "email": varchar,
-        "contact": varchar,
-        "gender": varchar
+  "error": bool,
+  "status": string,
+  "message": string,
+  "data": {
+    "user_id": int,
+    "image": varchar || null,
+    "fullname": varchar,
+    "email": varchar,
+    "contact": varchar,
+    "gender": varchar
     }
 }
 ```
@@ -168,16 +168,16 @@ Content-Type: application/json
 
 ```
 {
-    "error": false,
-    "status": "success",
-    "message": "Profil user berhasil diambil 200.",
-    "data": {
-        "user_id": 1,
-        "image": "",
-        "fullname": "ova",
-        "email": "ova@gmail.com",
-        "contact": "081248290010",
-        "gender": "female"
+  "error": false,
+  "status": "success",
+  "message": "Profil user berhasil diambil 200.",
+  "data": {
+    "user_id": 1,
+    "image": null, //will be null if not yet edited 
+    "fullname": "ova",
+    "email": "ova@gmail.com",
+    "contact": "081248290010",
+    "gender": "female"
     }
 }
 ```
