@@ -167,7 +167,7 @@ Content-Type: application/json
 
 - Example Response
 
-```
+```json
 {
   "error": false,
   "status": "success",
