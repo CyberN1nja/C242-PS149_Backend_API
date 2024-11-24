@@ -1,148 +1,19 @@
+// routes/user.js
 const express = require('express');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const router = express.Router();
 const db = require('../../db');
-
-// Kunci rahasia untuk JWT (Ganti dengan kunci yang lebih aman)
-const SECRET_KEY = 'Sorong123barat';
-
-// Registrasi User (Membuat akun baru) REGISTER
-router.post('/users', async (req, res) => {
-  const { user_id, image, fullname, email, password, contact, gender } = req.body;
-
-  try {
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Simpan user ke database
-    const query = 'INSERT INTO users (user_id, image, fullname, email, password, contact, gender) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    db.query(query, [user_id, image, fullname, email, hashedPassword, contact, gender], (err, result) => {
-      if (err) {
-        console.error('Error inserting data:', err);
-        return res.status(500).json({
-          error: true,
-          status: 'failure',
-          message: 'Error inserting data',
-        });
-      }
-
-      res.status(201).json({
-        error: false,
-        status: 'success',
-        message: 'User berhasil ditambahkan',
-        data: {
-          userId: user_id, // ID pengguna yang baru dibuat
-        },
-      });
-    });
-  } catch (error) {
-    console.error('Error hashing password:', error);
-    res.status(500).json({
-      error: true,
-      status: 'failure',
-      message: 'Error registering user',
-    });
-  }
-});
-
-// Login User (Mendapatkan token setelah login) LOGIN
-router.post('/auth/users', (req, res) => {
-  const { email, password } = req.body;
-
-  // Cek email di database
-  const query = 'SELECT * FROM users WHERE email = ?';
-  db.query(query, [email], async (err, results) => {
-    if (err) {
-      console.error('Error fetching user:', err);
-      return res.status(500).json({
-        error: true,
-        status: 'failure',
-        message: 'Error fetching user',
-      });
-    }
-
-    if (results.length === 0) {
-      return res.status(404).json({
-        error: true,
-        status: 'failure',
-        message: 'User not found',
-      });
-    }
-
-    const user = results[0];
-
-    // Verifikasi password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({
-        error: true,
-        status: 'failure',
-        message: 'Invalid credentials',
-      });
-    }
-
-    // Buat token JWT
-    const token = jwt.sign({ userId: user.user_id, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
-
-    // Kirim token sebagai response
-    res.status(200).json({
-      error: false,
-      status: 'success',
-      message: 'Login berhasil',
-      data: {
-        token: token,
-      },
-    });
-  });
-});
-
-// Endpoint untuk menambahkan data user
-router.post('/user', (req, res) => {
-  const { user_id, image, fullname, email, password, contact, gender } = req.body;
-  const query = 'INSERT INTO users (user_id, image, fullname, email, password, contact, gender) VALUES (?, ?, ?, ?, ?, ?, ?)';
-
-  db.query(query, [user_id, image, fullname, email, password, contact, gender], (err, result) => {
-    if (err) {
-      console.error('Error inserting data:', err);
-      res.status(500).json({
-        error: true,
-        status: 'failure',
-        message: 'Error inserting data',
-      });
-      return;
-    }
-    res.status(201).json({
-      error: false,
-      status: 'success',
-      message: 'User added successfully',
-      data: {
-        userId: user_id, // ID pengguna yang baru dibuat
-      },
-    });
-  });
-});
+const router = express.Router();
 
 // Endpoint untuk mengambil semua data user
-router.get('/user', (req, res) => {
+router.get('/users', (req, res) => {
   const query = 'SELECT * FROM users';
 
   db.query(query, (err, results) => {
     if (err) {
       console.error('Error fetching data:', err);
-      res.status(500).json({
-        error: true,
-        status: 'failure',
-        message: 'Error fetching data',
-      });
+      res.status(500).json({ error: true, status: 'failure', message: 'Error mengambil data 500.' });
       return;
     }
-    res.status(200).json({
-      error: false,
-      status: 'success',
-      message: 'Data fetched successfully',
-      data: results,
-    });
+    res.status(200).json({ error: false, status: 'success', message: 'Data berhasil diambil 200.', data: results });
   });
 });
 
@@ -154,27 +25,19 @@ router.get('/user/:id', (req, res) => {
   db.query(query, [userId], (err, results) => {
     if (err) {
       console.error('Error fetching data:', err);
-      res.status(500).json({
-        error: true,
-        status: 'failure',
-        message: 'Error fetching data',
-      });
+      res.status(500).json({ error: true, status: 'failure', message: 'Error mengambil data 500.' });
       return;
     }
 
     if (results.length === 0) {
-      res.status(404).json({
-        error: true,
-        status: 'failure',
-        message: 'User not found',
-      });
+      res.status(404).json({ error: true, status: 'failure', message: 'User tidak ditemukan 404.' });
       return;
     }
 
     res.status(200).json({
       error: false,
       status: 'success',
-      message: 'User data fetched successfully',
+      message: 'User data berhasil diambil 200.',
       data: results[0],
     });
   });
@@ -188,29 +51,17 @@ router.put('/user/:id', (req, res) => {
 
   db.query(query, [image, fullname, email, password, contact, gender, userId], (err, result) => {
     if (err) {
-      console.error('Error updating data:', err);
-      res.status(500).json({
-        error: true,
-        status: 'failure',
-        message: 'Error updating data',
-      });
+      console.error('Error update data:', err);
+      res.status(500).json({ error: true, status: 'failure', message: 'Error update data 500.' });
       return;
     }
 
     if (result.affectedRows === 0) {
-      res.status(404).json({
-        error: true,
-        status: 'failure',
-        message: 'User not found',
-      });
+      res.status(404).json({ error: true, status: 'failure', message: 'User tidak ditemukan 404.' });
       return;
     }
 
-    res.status(200).json({
-      error: false,
-      status: 'success',
-      message: 'User successfully updated',
-    });
+    res.status(200).json({ error: false, status: 'success', message: 'User berhasil diupdate 200.' });
   });
 });
 
@@ -221,56 +72,40 @@ router.delete('/user/:id', (req, res) => {
 
   db.query(query, [userId], (err, result) => {
     if (err) {
-      console.error('Error deleting data:', err);
-      res.status(500).json({
-        error: true,
-        status: 'failure',
-        message: 'Error deleting data',
-      });
+      console.error('Error menghapus data:', err);
+      res.status(500).json({ error: true, status: 'failure', message: 'Error menghapus data 500.' });
       return;
     }
 
     if (result.affectedRows === 0) {
-      res.status(404).json({
+      res.status(404).json({ error: true, status: 'failure', message: 'User tidak ditemukan 404.' });
+      return;
+    }
+
+    res.status(200).json({ error: false, status: 'success', message: 'User berhasil dihapus 200.' });
+  });
+});
+
+router.delete('/users', (req, res) => {
+  const query = 'DELETE FROM users'; // Menghapus seluruh data di tabel users
+
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error('Error menghapus seluruh data user:', err);
+      return res.status(500).json({
         error: true,
         status: 'failure',
-        message: 'User not found',
+        message: 'Error menghapus seluruh data user 500.',
       });
-      return;
     }
 
     res.status(200).json({
       error: false,
       status: 'success',
-      message: 'User successfully deleted',
+      message: 'Seluruh data user berhasil dihapus 200.',
     });
   });
 });
 
-// Middleware untuk autentikasi menggunakan JWT
-router.use('/user', (req, res, next) => {
-  const token = req.headers['authorization'];
-
-  if (!token) {
-    return res.status(403).json({
-      error: true,
-      status: 'failure',
-      message: 'Token is required',
-    });
-  }
-
-  jwt.verify(token, SECRET_KEY, (err, decoded) => {
-    if (err) {
-      return res.status(401).json({
-        error: true,
-        status: 'failure',
-        message: 'Invalid or expired token',
-      });
-    }
-
-    req.userId = decoded.userId;
-    next();
-  });
-});
 
 module.exports = router;

@@ -112,7 +112,9 @@ POST /auth/users
   "status": string,
   "message": string,
   "data": {
-    "token": string
+    // Token JWT yang dihasilkan, berisi informasi seperti userId, email, dan masa berlaku token (expiresIn selama 1 jam)
+
+    "token": string  
   }
 }
 ```
@@ -127,5 +129,55 @@ POST /auth/users
   "data": {
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjksImVtYWlsIjoiYmFtYmFuQGdtYWlsLmNvbSIsImlhdCI6MTczMjMzNzM2MSwiZXhwIjoxNzMyMzQwOTYxfQ.TVhBiKh28FV1DgolHT-oFZxZ0aHZ435pKhb-Sv_NFZI"
   }
+}
+```
+# User Login Profile 
+
+- Path 
+
+```
+POST /auth/profile
+```
+
+- Headers
+
+```
+Authorization: Bearer <access_token>
+Content-Type: application/json
+```
+
+- Response
+
+```
+{
+    "error": bool,
+    "status": string,
+    "message": string,
+    "data": {
+        "user_id": int,
+        "image": varchar,
+        "fullname": varchar,
+        "email": varchar,
+        "contact": varchar,
+        "gender": varchar
+    }
+}
+```
+
+- Example Response
+
+```
+{
+    "error": false,
+    "status": "success",
+    "message": "Profil user berhasil diambil 200.",
+    "data": {
+        "user_id": 1,
+        "image": "",
+        "fullname": "ova",
+        "email": "ova@gmail.com",
+        "contact": "081248290010",
+        "gender": "female"
+    }
 }
 ```
