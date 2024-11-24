@@ -26,7 +26,7 @@ POST /user
 
 - Body Request
 
-```
+```javascript
 {
   "user_id": int,
   "image": varchar || null,
@@ -40,7 +40,7 @@ POST /user
 
 - Example Body Request
 
-```
+```json
 {
   "user_id": "1",
   "image": "",
@@ -54,7 +54,7 @@ POST /user
 
 - Response
 
-```
+```javascript
 {
   "error": bool,
   "status": string,
@@ -67,7 +67,7 @@ POST /user
 
 - Example Response
 
-```
+```json
 {
   "error": false,
   "status": "success",
@@ -83,13 +83,13 @@ POST /user
 
 - Path
 
-```
+```http
 POST /auth/users
 ```
 
 - Body Request 
 
-```
+```javascript
 {
   "email": varchar,
   "password": varchar
@@ -98,7 +98,7 @@ POST /auth/users
 
 - Example Body Request
 
-```javascript
+```json
 {
   "email": "bamban@gmail.com",
   "password": "bambang321"
