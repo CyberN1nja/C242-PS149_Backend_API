@@ -173,7 +173,7 @@ Content-Type: application/json
   "message": "Profil user berhasil diambil 200.",
   "data": {
     "user_id": 1,
-    "image": null, `//will be null if not yet edited` 
+    "image": null,  //will be null if not yet edited 
     "fullname": "ova",
     "email": "ova@gmail.com",
     "contact": "081248290010",
