@@ -1,7 +1,5 @@
 # TrackMate API Documentation
 
-# Account
-
 # Endpoint
 
 - Prodaction
@@ -16,7 +14,9 @@
 http://localhost:3000/
 ```
 
-# Register
+# Account
+
+## Register
 
 - Path
 
@@ -78,7 +78,7 @@ POST /user
 }
 ```
 
-# Login
+## Login
 
 > Login refers to get `token`
 
@@ -134,7 +134,7 @@ POST /auth/users
 }
 ```
 
-# User Login Profile
+## User Login Profile
 
 - Path
 
@@ -185,7 +185,7 @@ Content-Type: application/json
 }
 ```
 
-# Edit Profile
+## Edit Profile
 
 - Path
 
@@ -244,7 +244,7 @@ Content-Type: application/json
 }
 ```
 
-# Update Acces Token
+## Update Acces Token
 
 - Path
 
@@ -294,7 +294,7 @@ PUT /authentications
 }
 ```
 
-# Logout
+## Logout
 
 - Path
 
@@ -329,7 +329,7 @@ Content-Type: application/json
 }
 ```
 
-# Delete account
+## Delete account
 
 - Path
 
