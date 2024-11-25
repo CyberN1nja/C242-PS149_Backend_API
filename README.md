@@ -79,7 +79,8 @@ POST /user
 ```
 
 # Login
-> Login refers to get `token` 
+
+> Login refers to get `token`
 
 - Path
 
@@ -87,7 +88,7 @@ POST /user
 POST /auth/users
 ```
 
-- Body Request 
+- Body Request
 
 ```javascript
 {
@@ -115,7 +116,7 @@ POST /auth/users
   "data": {
     // Token JWT yang dihasilkan, berisi informasi seperti userId, email, dan masa berlaku token (expiresIn selama 1 jam)
 
-    "token": string  
+    "token": string
   }
 }
 ```
@@ -132,7 +133,8 @@ POST /auth/users
   }
 }
 ```
-# User Login Profile 
+
+# User Login Profile
 
 - Path
 
@@ -174,12 +176,12 @@ Content-Type: application/json
   "message": "Profil user berhasil diambil 200.",
   "data": {
     "user_id": 1,
-    "image": null,  //will be null if not yet edited 
+    "image": null, //will be null if not yet edited
     "fullname": "ova",
     "email": "ova@gmail.com",
     "contact": "081248290010",
     "gender": "female"
-    }
+  }
 }
 ```
 
@@ -187,20 +189,20 @@ Content-Type: application/json
 
 - Path
 
-```
+```http
 PUT /users
 ```
 
 - Headers
 
-```
+```http
 Authorization: Bearer <access_token>
 Content-Type: application/json
 ```
 
 - Body Request
 
-```
+```javascript
 {
   "image": varchar || null,
   "fullname": varchar,
@@ -212,7 +214,7 @@ Content-Type: application/json
 
 - Example Body Request
 
-```
+```json
 {
   "image": "http//profile.com",
   "fullname": "eddiynano",
@@ -222,9 +224,9 @@ Content-Type: application/json
 }
 ```
 
-# Response
+- Response
 
-```
+```javascript
 {
   "error": bool,
   "status": string,
@@ -232,9 +234,9 @@ Content-Type: application/json
 }
 ```
 
-# Example Response
+- Example Response
 
-```
+```json
 {
   "error": false,
   "status": "success",
@@ -246,13 +248,13 @@ Content-Type: application/json
 
 - Path
 
-```
+```http
 PUT /authentications
 ```
 
 - Body Request
 
-```
+```javascript
 {
   "refreshToken": varchar
 }
@@ -260,7 +262,7 @@ PUT /authentications
 
 - Example Body Request
 
-```
+```json
 {
   "refreshToken": "....ExiH5PV_GPyyJdG5cI7v9FqmtPip9C0wdpYzqohjhw0"
 }
@@ -268,7 +270,7 @@ PUT /authentications
 
 - Response
 
-```
+```javascript
 {
     "error": bool,
     "status": string,
@@ -281,14 +283,14 @@ PUT /authentications
 
 - Example Response
 
-```
+```json
 {
-    "error": false,
-    "status": "success",
-    "message": "Access Token berhasil diperbarui",
-    "data": {
-        "accessToken": "....jPdJLMZuN-MUYtc0wBItdxVbY2s9UidYxANqV560O6M"
-    }
+  "error": false,
+  "status": "success",
+  "message": "Access Token berhasil diperbarui",
+  "data": {
+    "accessToken": "....jPdJLMZuN-MUYtc0wBItdxVbY2s9UidYxANqV560O6M"
+  }
 }
 ```
 
@@ -296,29 +298,30 @@ PUT /authentications
 
 - Path
 
-```
+```http
 DELETE /authentications
 ```
 
 - Headers
 
-```
+```http
 Authorization: Bearer <access_token>
 Content-Type: application/json
 ```
 
 - Response
 
-```
+```javascript
 {
   "error": bool,
   "status": string,
   "message": string
 }
 ```
+
 - Example Response
 
-```
+```json
 {
   "error": false,
   "status": "success",
@@ -330,33 +333,33 @@ Content-Type: application/json
 
 - Path
 
-```
+```http
 DELETE /authentications
 ```
 
 - Headers
 
-```
+```http
 Authorization: Bearer <access_token>
 Content-Type: application/json
 ```
 
 - Response
 
-```
+```javascript
 {
-    "error": bool,
-    "status": string,
-    "message": string
+  "error": bool,
+  "status": string,
+  "message": string
 }
 ```
 
 - Example Response
 
-```
+```json
 {
-    "error": false,
-    "status": "success",
-    "message": "Akun berhasil dihapus"
+  "error": false,
+  "status": "success",
+  "message": "Akun berhasil dihapus"
 }
 ```
