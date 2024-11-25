@@ -134,7 +134,7 @@ POST /auth/users
 ```
 # User Login Profile 
 
-- Path 
+- Path
 
 ```http
 POST /auth/profile
@@ -180,5 +180,183 @@ Content-Type: application/json
     "contact": "081248290010",
     "gender": "female"
     }
+}
+```
+
+# Edit Profile
+
+- Path
+
+```
+PUT /users
+```
+
+- Headers
+
+```
+Authorization: Bearer <access_token>
+Content-Type: application/json
+```
+
+- Body Request
+
+```
+{
+  "image": varchar || null,
+  "fullname": varchar,
+  "email": varchar,
+  "contact": varchar,
+  "gender": varchar
+}
+```
+
+- Example Body Request
+
+```
+{
+  "image": "http//profile.com",
+  "fullname": "eddiynano",
+  "email": "eddiynano@gmail.com",
+  "contact": "0812482212",
+  "gender": "male"
+}
+```
+
+# Response
+
+```
+{
+  "error": bool,
+  "status": string,
+  "message": string
+}
+```
+
+# Example Response
+
+```
+{
+  "error": false,
+  "status": "success",
+  "message": "Profil berhasil diperbarui"
+}
+```
+
+# Update Acces Token
+
+- Path
+
+```
+PUT /authentications
+```
+
+- Body Request
+
+```
+{
+  "refreshToken": varchar
+}
+```
+
+- Example Body Request
+
+```
+{
+  "refreshToken": "....ExiH5PV_GPyyJdG5cI7v9FqmtPip9C0wdpYzqohjhw0"
+}
+```
+
+- Response
+
+```
+{
+    "error": bool,
+    "status": string,
+    "message": string,
+    "data": {
+        "accessToken": varchar
+    }
+}
+```
+
+- Example Response
+
+```
+{
+    "error": false,
+    "status": "success",
+    "message": "Access Token berhasil diperbarui",
+    "data": {
+        "accessToken": "....jPdJLMZuN-MUYtc0wBItdxVbY2s9UidYxANqV560O6M"
+    }
+}
+```
+
+# Logout
+
+- Path
+
+```
+DELETE /authentications
+```
+
+- Headers
+
+```
+Authorization: Bearer <access_token>
+Content-Type: application/json
+```
+
+- Response
+
+```
+{
+  "error": bool,
+  "status": string,
+  "message": string
+}
+```
+- Example Response
+
+```
+{
+  "error": false,
+  "status": "success",
+  "message": "Refresh token berhasil dihapus"
+}
+```
+
+# Delete account
+
+- Path
+
+```
+DELETE /authentications
+```
+
+- Headers
+
+```
+Authorization: Bearer <access_token>
+Content-Type: application/json
+```
+
+- Response
+
+```
+{
+    "error": bool,
+    "status": string,
+    "message": string
+}
+```
+
+- Example Response
+
+```
+{
+    "error": false,
+    "status": "success",
+    "message": "Akun berhasil dihapus"
 }
 ```

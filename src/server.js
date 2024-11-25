@@ -10,7 +10,7 @@ app.use(express.json()); // Untuk parsing JSON body
 app.get('/', (req, res) => {
   try {
     // Jika API dalam keadaan baik
-    res.send('Selamat datang silahkan gunakan API ini sepuasnyaaa :)');
+    res.send('Request success :)');
   } catch (error) {
     // Jika terjadi kesalahan
     res.status(500).json({
