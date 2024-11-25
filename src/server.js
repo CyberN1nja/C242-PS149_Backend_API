@@ -1,7 +1,7 @@
 const express = require('express');
 const userRoutes = require('./routes/api/userRotes'); // Impor rute
 const hMatRoutes = require('./routes/api/hMatRoutes'); // Impor rute
-const userAuth = require('./routes/api/auth');
+const userAuth = require('./routes/api/users/auth');
 
 const app = express();
 app.use(express.json()); // Untuk parsing JSON body

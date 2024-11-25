@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const authenticate = require('./authMiddleware');
-const db = require('../../db');
+const db = require('../../../db');
 require('dotenv').config(); // Menggunakan .env
 const router = express.Router();
 
