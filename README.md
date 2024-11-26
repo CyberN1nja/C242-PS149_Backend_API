@@ -309,6 +309,22 @@ Authorization: Bearer <access_token>
 Content-Type: application/json
 ```
 
+- Body Request
+
+```javascript
+{
+  "refreshToken": varchar
+}
+```
+
+- Example Body Request
+
+```json
+{
+  "refreshToken": "....ExiH5PV_GPyyJdG5cI7v9FqmtPip9C0wdpYzqohjhw0"
+}
+```
+
 - Response
 
 ```javascript
@@ -344,6 +360,22 @@ Authorization: Bearer <access_token>
 Content-Type: application/json
 ```
 
+- Body Request
+
+```javascript
+{
+  "refreshToken": varchar
+}
+```
+
+- Example Body Request
+
+```json
+{
+  "refreshToken": "....ExiH5PV_GPyyJdG5cI7v9FqmtPip9C0wdpYzqohjhw0"
+}
+```
+
 - Response
 
 ```javascript
@@ -363,3 +395,7 @@ Content-Type: application/json
   "message": "Akun berhasil dihapus"
 }
 ```
+
+# Health Metrics
+
+<!-- mengerjakan push dan get data user dari database -->
