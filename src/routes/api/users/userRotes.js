@@ -1,6 +1,6 @@
 // routes/user.js
 const express = require('express');
-const db = require('../../db');
+const db = require('../../../db');
 const router = express.Router();
 
 // Endpoint untuk mengambil semua data user

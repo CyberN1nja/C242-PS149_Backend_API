@@ -21,7 +21,7 @@ http://localhost:3000/
 - Path
 
 ```http
-POST /user
+POST /users/register
 ```
 
 - Body Request
@@ -80,7 +80,7 @@ POST /user
 
 ## Login
 
-> Login refers to get `token`
+> Login refers to get `accessToken` and `refreshToken`
 
 - Path
 
@@ -110,14 +110,12 @@ POST /auth/users
 
 ```javascript
 {
-  "error": bool,
-  "status": string,
-  "message": string,
-  "data": {
-    // Token JWT yang dihasilkan, berisi informasi seperti userId, email, dan masa berlaku token (expiresIn selama 1 jam)
-
-    "token": string
-  }
+    "error": bool,
+    "message": string,
+    "data": {
+        "accessToken": varchar,
+        "refreshToken": varchar
+    }
 }
 ```
 
@@ -125,12 +123,12 @@ POST /auth/users
 
 ```json
 {
-  "error": false,
-  "status": "success",
-  "message": "Login berhasil",
-  "data": {
-    "token": ".....TVhBiKh28FV1DgolHT-oFZxZ0aHZ435pKhb-Sv_NFZI"
-  }
+    "error": false,
+    "message": "Login berhasil!",
+    "data": {
+        "accessToken": "........eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+        "refreshToken": ".......eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    }
 }
 ```
 
@@ -139,14 +137,21 @@ POST /auth/users
 - Path
 
 ```http
-POST /auth/profile
+GET /auth/profile
 ```
 
 - Headers
 
+> go to Headers then enter the key and value (Authorization as key and Bearer (access_token) as value)
+
 ```http
 Authorization: Bearer <access_token>
-Content-Type: application/json
+```
+
+```json
+{
+  "refreshToken": "........eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+}
 ```
 
 - Response
@@ -197,7 +202,6 @@ PUT /users
 
 ```http
 Authorization: Bearer <access_token>
-Content-Type: application/json
 ```
 
 - Body Request
@@ -246,10 +250,12 @@ Content-Type: application/json
 
 ## Update Acces Token
 
+> for security access token will be deleted in a short time, so use update refresh token to get it again.
+
 - Path
 
 ```http
-PUT /authentications
+PUT /auth
 ```
 
 - Body Request
@@ -264,7 +270,7 @@ PUT /authentications
 
 ```json
 {
-  "refreshToken": "....ExiH5PV_GPyyJdG5cI7v9FqmtPip9C0wdpYzqohjhw0"
+  "refreshToken": "......ExiH5PV_GPyyJdG5cI7v9FqmtPip9C0wdpYzqohjhw0"
 }
 ```
 
@@ -296,17 +302,12 @@ PUT /authentications
 
 ## Logout
 
+> Logout refers to delete refreh token
+
 - Path
 
 ```http
-DELETE /authentications
-```
-
-- Headers
-
-```http
-Authorization: Bearer <access_token>
-Content-Type: application/json
+DELETE /auth/logout
 ```
 
 - Body Request
@@ -350,14 +351,15 @@ Content-Type: application/json
 - Path
 
 ```http
-DELETE /authentications
+DELETE /users/delete
 ```
+
+> delete acount not delete refresh token, so please send request to delete refresh token also to logout after delete account
 
 - Headers
 
 ```http
 Authorization: Bearer <access_token>
-Content-Type: application/json
 ```
 
 - Body Request
@@ -380,9 +382,12 @@ Content-Type: application/json
 
 ```javascript
 {
-  "error": bool,
-  "status": string,
-  "message": string
+    "error": bool,
+    "status": string,
+    "message": string,
+    "data": {
+        "userId": string
+    }
 }
 ```
 
@@ -390,9 +395,12 @@ Content-Type: application/json
 
 ```json
 {
-  "error": false,
-  "status": "success",
-  "message": "Akun berhasil dihapus"
+    "error": false,
+    "status": "success",
+    "message": "User berhasil ditambahkan 201.",
+    "data": {
+        "userId": "2"
+    }
 }
 ```
 

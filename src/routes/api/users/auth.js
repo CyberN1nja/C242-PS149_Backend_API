@@ -3,14 +3,14 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const authenticate = require('./authMiddleware');
 const db = require('../../../db');
-require('dotenv').config(); // Menggunakan .env
+require('dotenv').config(); // Menggunakan .env untuk menyimpan variabel lingkungan
 const router = express.Router();
 
 // Kunci rahasia untuk JWT
 const SECRET_KEY = process.env.SECRET_KEY;
 
 // Registrasi User (Membuat akun baru) REGISTER
-router.post('/user', async (req, res) => {
+router.post('/users/register', async (req, res) => {
   const { user_id, image, fullname, email, password, contact, gender } = req.body;
 
   try {
@@ -37,7 +37,7 @@ router.post('/user', async (req, res) => {
 });
 
 // Login User (Mendapatkan token setelah login) LOGIN
-router.post('/auth/users', (req, res) => {
+router.post('/auth/login', (req, res) => {
   const { email, password } = req.body;
 
   const query = 'SELECT * FROM users WHERE email = ?';
@@ -57,29 +57,41 @@ router.post('/auth/users', (req, res) => {
       return res.status(401).json({ error: true, status: 'failure', message: 'Kredensial tidak valid 401.' });
     }
 
-    const token = jwt.sign({ userId: user.user_id, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
+    // Membuat Access Token (berlaku selama 1 jam)
+    const accessToken = jwt.sign({ userId: user.user_id, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
 
-    res.status(200).json({
-      error: false,
-      status: 'success',
-      message: 'Login berhasil 200.',
-      data: { token: token },
+    // Membuat Refresh Token (berlaku selama 7 hari)
+    const refreshToken = jwt.sign({ userId: user.user_id, email: user.email }, SECRET_KEY, { expiresIn: '7d' });
+
+    // Menyimpan Refresh Token ke database
+    const insertTokenQuery = 'INSERT INTO refresh_tokens (user_id, token) VALUES (?, ?)';
+    db.query(insertTokenQuery, [user.user_id, refreshToken], (err, result) => {
+      if (err) {
+        console.error('Error menyimpan refresh token:', err);
+        return res.status(500).json({ error: true, message: 'Error menyimpan refresh token.' });
+      }
+
+      res.status(200).json({
+        error: false,
+        message: 'Login berhasil!',
+        data: { accessToken, refreshToken },
+      });
     });
   });
 });
 
-// User Login Profile
-router.post('/auth/profile', authenticate, (req, res) => {
-  const userId = req.userId; // userId dari middleware authenticate
+// lihat profile user
+router.get('/users/profile', authenticate, (req, res) => {
+  const userId = req.userId; // userId diperoleh dari middleware `authenticate`
 
   const query = 'SELECT user_id, image, fullname, email, contact, gender FROM users WHERE user_id = ?';
   db.query(query, [userId], (err, results) => {
     if (err) {
-      console.error('Error fetching user profile:', err);
+      console.error('Error mengambil data profil:', err);
       return res.status(500).json({
         error: true,
         status: 'failure',
-        message: 'Error mendapatkan profil pengguna 500.',
+        message: 'Error mengambil data profil.',
       });
     }
 
@@ -87,43 +99,46 @@ router.post('/auth/profile', authenticate, (req, res) => {
       return res.status(404).json({
         error: true,
         status: 'failure',
-        message: 'Profil pengguna tidak ditemukan 404.',
+        message: 'Profil pengguna tidak ditemukan.',
       });
     }
 
     res.status(200).json({
       error: false,
       status: 'success',
-      message: 'Profil user berhasil diambil 200.',
-      data: results[0], // Mengembalikan data profil pengguna
+      message: 'Profil pengguna berhasil diambil.',
+      data: results[0],
     });
   });
 });
 
-// Edit Profile
-router.put('/users', authenticate, async (req, res) => {
+// Update Profil User
+router.put('/users/update', authenticate, (req, res) => {
+  const userId = req.userId; // userId diperoleh dari middleware `authenticate`
   const { image, fullname, email, contact, gender } = req.body;
-  const userId = req.userId; // userId dari middleware authenticate
 
-  // Validasi input
-  if (!email || !fullname) {
-    // 'email' dan 'fullname' wajib diisi
+  if (!image && !fullname && !email && !contact && !gender) {
     return res.status(400).json({
       error: true,
       status: 'failure',
-      message: 'Email dan fullname wajib diisi.',
+      message: 'Tidak ada data yang diperbarui.',
     });
   }
 
-  // Update data pengguna di database
-  const query = 'UPDATE users SET image = ?, fullname = ?, email = ?, contact = ?, gender = ? WHERE user_id = ?';
-  db.query(query, [image || null, fullname, email, contact || null, gender || null, userId], (err, result) => {
+  // Query untuk memperbarui data pengguna
+  const query = `
+    UPDATE users 
+    SET image = ?, fullname = ?, email = ?, contact = ?, gender = ? 
+    WHERE user_id = ?
+  `;
+
+  db.query(query, [image, fullname, email, contact, gender, userId], (err, result) => {
     if (err) {
-      console.error('Error updating profile:', err);
+      console.error('Error memperbarui profil:', err);
       return res.status(500).json({
         error: true,
         status: 'failure',
-        message: 'Error memperbarui profil pengguna 500.',
+        message: 'Error memperbarui profil.',
       });
     }
 
@@ -131,20 +146,20 @@ router.put('/users', authenticate, async (req, res) => {
       return res.status(404).json({
         error: true,
         status: 'failure',
-        message: 'User tidak ditemukan atau tidak ada perubahan.',
+        message: 'Profil pengguna tidak ditemukan.',
       });
     }
 
     res.status(200).json({
       error: false,
       status: 'success',
-      message: 'Profil berhasil diperbarui',
+      message: 'Profil pengguna berhasil diperbarui.',
     });
   });
 });
 
-// Update Access Token (Perbarui Token Akses)
-router.put('/authentications', authenticate, (req, res) => {
+// Update Access Token (Perbarui Token Akses) Menggunakan Refresh Token
+router.put('/auth', (req, res) => {
   const { refreshToken } = req.body;
 
   // Validasi input refresh token
@@ -156,10 +171,18 @@ router.put('/authentications', authenticate, (req, res) => {
     });
   }
 
-  // Proses pembaruan token (misalnya verifikasi refresh token dan buat access token baru)
-  try {
-    // Gantikan dengan logika untuk memperbarui access token menggunakan refresh token
-    const accessToken = jwt.sign({ userId: req.userId }, SECRET_KEY, { expiresIn: '1h' });
+  // Memverifikasi refresh token
+  jwt.verify(refreshToken, SECRET_KEY, (err, decoded) => {
+    if (err) {
+      return res.status(403).json({
+        error: true,
+        status: 'failure',
+        message: 'Refresh token tidak valid.',
+      });
+    }
+
+    // Membuat access token baru
+    const accessToken = jwt.sign({ userId: decoded.userId, email: decoded.email }, SECRET_KEY, { expiresIn: '1h' });
 
     res.status(200).json({
       error: false,
@@ -167,21 +190,13 @@ router.put('/authentications', authenticate, (req, res) => {
       message: 'Access Token berhasil diperbarui',
       data: { accessToken },
     });
-  } catch (error) {
-    console.error('Error memperbarui access token:', error);
-    res.status(500).json({
-      error: true,
-      status: 'failure',
-      message: 'Error memperbarui access token 500.',
-    });
-  }
+  });
 });
 
 // Logout (Hapus Refresh Token)
-router.delete('/authentications', authenticate, (req, res) => {
+router.delete('/auth/logout', (req, res) => {
   const { refreshToken } = req.body;
 
-  // Validasi input refresh token
   if (!refreshToken) {
     return res.status(400).json({
       error: true,
@@ -190,59 +205,153 @@ router.delete('/authentications', authenticate, (req, res) => {
     });
   }
 
-  // Proses logout (misalnya menghapus refresh token dari database atau sesi)
-  try {
-    // Gantikan dengan logika untuk menghapus refresh token
-    res.status(200).json({
-      error: false,
-      status: 'success',
-      message: 'Refresh token berhasil dihapus',
+  // Validasi refresh token sebelum dihapus
+  jwt.verify(refreshToken, process.env.SECRET_KEY, (err, decoded) => {
+    if (err) {
+      return res.status(403).json({
+        error: true,
+        status: 'failure',
+        message: 'Refresh token tidak valid.',
+      });
+    }
+
+    // Hapus refresh token dari database
+    const deleteTokenQuery = 'DELETE FROM refresh_tokens WHERE token = ?';
+    db.query(deleteTokenQuery, [refreshToken], (err, result) => {
+      if (err) {
+        console.error('Error menghapus refresh token:', err);
+        return res.status(500).json({
+          error: true,
+          status: 'failure',
+          message: 'Error menghapus refresh token.',
+        });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({
+          error: true,
+          status: 'failure',
+          message: 'Refresh token tidak ditemukan.',
+        });
+      }
+
+      res.status(200).json({
+        error: false,
+        status: 'success',
+        message: 'Refresh token berhasil dihapus.',
+      });
     });
-  } catch (error) {
-    console.error('Error saat logout:', error);
-    res.status(500).json({
-      error: true,
-      status: 'failure',
-      message: 'Error saat logout 500.',
-    });
-  }
+  });
 });
 
-// Delete Account (Hapus Akun Pengguna)
-router.delete('/users', authenticate, (req, res) => {
-  const userId = req.userId;
 
-  // Hapus akun pengguna (menghapus dari database)
-  const query = 'DELETE FROM users WHERE user_id = ?';
-  db.query(query, [userId], (err, result) => {
+// Delete Account (Hapus Akun Pengguna)
+router.delete('/users/delete', authenticate, (req, res) => {
+  const userId = req.userId;
+  const { refreshToken } = req.body;
+
+  if (!userId || !refreshToken) {
+    return res.status(400).json({
+      error: true,
+      status: 'failure',
+      message: 'User ID atau Refresh token tidak ditemukan dalam permintaan.',
+    });
+  }
+
+  // Mulai transaksi database
+  db.beginTransaction((err) => {
     if (err) {
-      console.error('Error menghapus akun:', err);
+      console.error('Error memulai transaksi:', err);
       return res.status(500).json({
         error: true,
         status: 'failure',
-        message: 'Error menghapus akun 500.',
+        message: 'Error memulai transaksi.',
       });
     }
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({
-        error: true,
-        status: 'failure',
-        message: 'Akun tidak ditemukan.',
+    // Hapus refresh token terkait terlebih dahulu
+    const deleteTokenQuery = 'DELETE FROM refresh_tokens WHERE token = ? AND user_id = ?';
+    db.query(deleteTokenQuery, [refreshToken, userId], (err, result) => {
+      if (err) {
+        console.error('Error menghapus refresh token:', err);
+        return db.rollback(() => {
+          res.status(500).json({
+            error: true,
+            status: 'failure',
+            message: 'Error menghapus refresh token.',
+          });
+        });
+      }
+
+      if (result.affectedRows === 0) {
+        return db.rollback(() => {
+          res.status(404).json({
+            error: true,
+            status: 'failure',
+            message: 'Refresh token tidak ditemukan.',
+          });
+        });
+      }
+
+      // Hapus data dari tabel user_physical_metrics yang terkait dengan user_id
+      const deletePhysicalMetricsQuery = 'DELETE FROM user_physical_metrics WHERE user_id = ?';
+      db.query(deletePhysicalMetricsQuery, [userId], (err, result) => {
+        if (err) {
+          console.error('Error menghapus data fisik pengguna:', err);
+          return db.rollback(() => {
+            res.status(500).json({
+              error: true,
+              status: 'failure',
+              message: 'Error menghapus data fisik pengguna.',
+            });
+          });
+        }
+
+        // Hapus akun pengguna setelah data fisik dihapus
+        const deleteUserQuery = 'DELETE FROM users WHERE user_id = ?';
+        db.query(deleteUserQuery, [userId], (err, result) => {
+          if (err) {
+            console.error('Error menghapus akun:', err);
+            return db.rollback(() => {
+              res.status(500).json({
+                error: true,
+                status: 'failure',
+                message: 'Error menghapus akun.',
+              });
+            });
+          }
+
+          if (result.affectedRows === 0) {
+            return db.rollback(() => {
+              res.status(404).json({
+                error: true,
+                status: 'failure',
+                message: 'Akun tidak ditemukan.',
+              });
+            });
+          }
+
+          // Commit transaksi jika semua berhasil
+          db.commit((err) => {
+            if (err) {
+              console.error('Error melakukan commit:', err);
+              return db.rollback(() => {
+                res.status(500).json({
+                  error: true,
+                  status: 'failure',
+                  message: 'Error menyelesaikan transaksi.',
+                });
+              });
+            }
+
+            res.status(200).json({
+              error: false,
+              status: 'success',
+              message: 'Akun dan data terkait berhasil dihapus.',
+            });
+          });
+        });
       });
-    }
-
-    // Setelah menghapus akun, kita akan logout pengguna dengan menghapus refresh token
-    const { refreshToken } = req.body;
-    if (refreshToken) {
-      // Hapus refresh token dari tempat penyimpanan (misalnya database atau cache)
-      // Gantikan dengan logika untuk menghapus refresh token dari tempat penyimpanan
-    }
-
-    res.status(200).json({
-      error: false,
-      status: 'success',
-      message: 'Akun berhasil dihapus',
     });
   });
 });
