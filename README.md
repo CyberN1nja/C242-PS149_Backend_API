@@ -529,3 +529,109 @@ Authorization: Bearer <access_token>
   "fats": 18.2
 }
 ```
+
+# Users Foods
+
+## Get All User Foods
+
+- Path
+
+```http
+GET /user_foods
+```
+
+- Response
+
+```javascript
+{
+  "error": bool,
+  "message": string,
+  "data": [
+    {
+      "food_id": int,
+      "user_id": int,
+      "food_name": string,
+      "calories": float,
+      "protein": float,
+      "fats": float,
+      "crabs": float
+    }
+  ]
+}
+```
+
+- Example Response
+
+```json
+{
+  "error": false,
+  "message": "User foods fetched successfully",
+  "data": [
+    {
+      "food_id": 1,
+      "user_id": 101,
+      "food_name": "Grilled Chicken",
+      "calories": 200,
+      "protein": 25,
+      "fats": 5,
+      "crabs": 0
+    },
+    {
+      "food_id": 2,
+      "user_id": 102,
+      "food_name": "Apple",
+      "calories": 52,
+      "protein": 0.3,
+      "fats": 0.2,
+      "crabs": 14
+    }
+  ]
+}
+```
+
+## GET User Food by ID
+
+- Path
+
+```
+GET /user_foods/:food_id
+```
+
+- Response
+
+```
+{
+  "error": false,
+  "message": "User food fetched successfully",
+  "data": {
+    "food_id": int,
+    "user_id": int,
+    "food_name": string,
+    "calories": float,
+    "protein": float,
+    "fats": float,
+    "crabs": float
+  }
+}
+```
+
+## POST a New User Food
+
+- Path
+
+```http
+POST /user_foods
+```
+
+- Request
+
+``` javascript
+{
+    "user_id": "1",
+    "food_name": "kentang bakar",
+    "calories": "390",
+    "protein": "3.5",
+    "fats": "16",
+    "crabs": "50"
+}
+```

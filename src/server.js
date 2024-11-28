@@ -2,6 +2,7 @@ const express = require('express');
 const userRoutes = require('./routes/api/users/userRotes'); // Impor rute
 const userAuth = require('./routes/api/users/auth');
 const hMatRoutes = require('./routes/api/users_metrics/hMatRoutes'); // Impor rute
+const foodRoutes = require('./routes/api/foods/foods');
 
 const app = express();
 app.use(express.json()); // Untuk parsing JSON body
@@ -32,6 +33,7 @@ app.use((err, req, res, next) => {
 app.use('/', userAuth);
 app.use('/', userRoutes);
 app.use('/', hMatRoutes);
+app.use('/', foodRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
