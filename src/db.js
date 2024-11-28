@@ -2,12 +2,11 @@
 const mysql = require('mysql2');
 require('dotenv').config();
 
-// Konfigurasi koneksi ke Cloud SQL
 const db = mysql.createConnection({
-  host: '34.101.127.61', // ke env
-  user: 'root',
-  password: 'admin123',
-  database: 'catloris',
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
 
 db.connect((err) => {
@@ -18,4 +17,4 @@ db.connect((err) => {
   console.log('Connected to Cloud SQL database.');
 });
 
-module.exports = db; 
+module.exports = db;
