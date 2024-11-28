@@ -490,7 +490,7 @@ GET /metrics/all
 ]
 ```
 
-## Get Metrics by User ID
+## Get Metrics By User ID
 
 - Path
 
@@ -589,7 +589,7 @@ GET /user_foods
 }
 ```
 
-## GET User Food by ID
+## GET User Food By ID
 
 - Path
 
@@ -700,5 +700,231 @@ POST /user_foods
     "fats": 13,
     "crabs": 0
   }
+}
+```
+
+# User Point
+
+## GET ALL users points
+
+- Path
+
+```http
+GET /user_points
+```
+
+- Response
+
+```javascript
+[
+  {
+    "id": int,
+    "user_id": int,
+    "points": int,
+    "reason": varchar,
+    "created_at": datetime,
+    "updated_at": datetime
+  }
+]
+```
+
+- Example Response
+
+```json
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "points": 100,
+    "reason": "Referral bonus",
+    "created_at": "2024-11-29T12:00:00Z",
+    "updated_at": "2024-11-29T12:00:00Z"
+  },
+  {
+    "id": 2,
+    "user_id": 2,
+    "points": 50,
+    "reason": "Reward for completing survey",
+    "created_at": "2024-11-29T13:00:00Z",
+    "updated_at": "2024-11-29T13:00:00Z"
+  }
+]
+```
+
+## GET User Point By ID
+
+- Path 
+
+```http
+GET /user_points/:user_id
+```
+
+- Request
+
+> To display data based on the id
+
+```http
+GET /user_points/1
+```
+
+- Response
+
+```javascript
+[
+  {
+    "id": int,
+    "user_id": int,
+    "points": int,
+    "reason": varchar,
+    "created_at": datetime,
+    "updated_at": datetime
+  }
+]
+```
+
+- Example Response
+
+```json
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "points": 100,
+    "reason": "Referral bonus",
+    "created_at": "2024-11-29T12:00:00Z",
+    "updated_at": "2024-11-29T12:00:00Z"
+  }
+]
+```
+
+## GET User Total Point By ID
+
+> Retrieves total points based on user_id
+
+- Path
+
+```http
+GET /user_points/total/:user_id
+```
+
+- Request
+
+```http
+GET /user_points/total/1 
+```
+
+- Response
+
+```json
+{
+  "total_points": 150
+}
+```
+
+## POST User Points Auth
+
+> Adds points for already authenticated users.
+
+- Request
+
+```http
+Authorization: Bearer <accessToken>
+```
+
+- Body 
+
+```javascript
+{
+  "points": int,
+  "reason": varchar
+}
+```
+
+- Example Body 
+
+```javascript
+{
+  "message": "Point added successfully",
+  "insertId": 3
+}
+```
+
+## PUT User Point By ID
+
+> Updates point entries based on user_id.
+
+- Path
+
+```http
+PUT /user_points/:user_id
+```
+
+- Request
+
+```http
+Authorization: Bearer <accessToken>
+```
+
+- Body
+
+```javascript
+{
+  "points": int,
+  "reason": varchar
+}
+```
+
+- Example Body
+
+```json
+{
+  "points": 120,
+  "reason": "Updated reward"
+}
+```
+
+- Response
+
+```javascript
+{
+  "message": string
+}
+```
+
+- Example Response
+
+```json 
+{
+  "message": "Point updated successfully"
+}
+```
+
+## DELETE User By ID
+
+- Path
+
+```http
+DELETE /user_points/:user_id
+```
+
+- Request
+
+```http
+Authorization: Bearer <jwt_token>
+```
+
+- Response 
+
+```javascript
+{
+  "message": string
+}
+```
+
+- Example Response 
+
+```javascript
+{
+  "message": "Point deleted successfully"
 }
 ```

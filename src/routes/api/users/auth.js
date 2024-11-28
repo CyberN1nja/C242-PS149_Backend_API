@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const authenticate = require('./authMiddleware');
 const db = require('../../../db');
-require('dotenv').config(); // Menggunakan .env untuk menyimpan variabel lingkungan
+require('dotenv').config(); 
 const router = express.Router();
 
 // Kunci rahasia untuk JWT
