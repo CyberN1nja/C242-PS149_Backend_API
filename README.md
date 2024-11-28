@@ -448,7 +448,7 @@ Authorization: Bearer <access_token>
 
 - Path
 
-```
+```http
 GET /metrics/all
 ```
 
