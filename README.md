@@ -599,10 +599,10 @@ GET /user_foods/:food_id
 
 - Response
 
-```
+```javascript
 {
-  "error": false,
-  "message": "User food fetched successfully",
+  "error": bool,
+  "message": string,
   "data": {
     "food_id": int,
     "user_id": int,
@@ -611,6 +611,24 @@ GET /user_foods/:food_id
     "protein": float,
     "fats": float,
     "crabs": float
+  }
+}
+```
+
+- Example Response
+
+```json
+{
+  "error": false,
+  "message": "User food fetched successfully",
+  "data": {
+    "food_id": 1,
+    "user_id": 101,
+    "food_name": "Grilled Chicken",
+    "calories": 200,
+    "protein": 25,
+    "fats": 5,
+    "crabs": 0
   }
 }
 ```
@@ -627,11 +645,60 @@ POST /user_foods
 
 ``` javascript
 {
-    "user_id": "1",
-    "food_name": "kentang bakar",
-    "calories": "390",
-    "protein": "3.5",
-    "fats": "16",
-    "crabs": "50"
+    "user_id": int,
+    "food_name": string,
+    "calories": decimal,
+    "protein": decimal,
+    "fats": decimal,
+    "crabs": decimal
+}
+```
+
+- Example Request
+
+``` javascript
+{
+  "user_id": 1,
+  "food_name": "Salmon",
+  "calories": 208,
+  "protein": 20,
+  "fats": 13,
+  "crabs": 0
+}
+```
+
+- Response
+
+```javascript
+{
+  "error": bool,
+  "message": string,
+  "data": {
+    "food_id": int,
+    "user_id": int,
+    "food_name": string,
+    "calories": float,
+    "protein": float,
+    "fats": float,
+    "crabs": float
+  }
+}
+```
+
+- Example Response
+
+```json
+{
+  "error": false,
+  "message": "User food added successfully",
+  "data": {
+    "food_id": 3,
+    "user_id": 101,
+    "food_name": "Salmon",
+    "calories": 208,
+    "protein": 20,
+    "fats": 13,
+    "crabs": 0
+  }
 }
 ```
