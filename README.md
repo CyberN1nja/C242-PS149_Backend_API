@@ -362,22 +362,6 @@ DELETE /users/delete
 Authorization: Bearer <access_token>
 ```
 
-- Body Request
-
-```javascript
-{
-  "refreshToken": varchar
-}
-```
-
-- Example Body Request
-
-```json
-{
-  "refreshToken": "....ExiH5PV_GPyyJdG5cI7v9FqmtPip9C0wdpYzqohjhw0"
-}
-```
-
 - Response
 
 ```javascript
@@ -399,11 +383,149 @@ Authorization: Bearer <access_token>
     "status": "success",
     "message": "User berhasil ditambahkan 201.",
     "data": {
-        "userId": "2"
+        "userId": "1"
     }
 }
 ```
 
-# Health Metrics
+# User Physical Metrics
 
-<!-- mengerjakan push dan get data user dari database -->
+## Add New Metrics
+
+- Path
+
+```http
+POST /metrics
+```
+
+- Headers
+
+```http
+Authorization: Bearer <access_token>
+```
+
+- Body Request
+
+```javascript
+{
+  "age": int,
+  "height": float,
+  "weight": float,
+  "fats": float
+}
+```
+
+- Example Body Request
+
+``` json
+{
+  "age": 25,
+  "height": 170.5,
+  "weight": 65.3,
+  "fats": 18.2
+}
+```
+
+- Response
+
+```javascript
+{
+  "error": bool,
+  "message": string
+}
+```
+
+- Example Response
+
+```json
+{
+  "error": false,
+  "message": "User berhasil ditambahkan"
+}
+```
+
+## Get All Metrics
+
+- Path
+
+```
+GET /metrics/all
+```
+
+- Response
+
+```javascript
+[
+  {
+    "id": int,
+    "user_id": int,
+    "age": int,
+    "height": float,
+    "weight": float,
+    "fats": float
+  }
+]
+```
+
+- Example Response
+
+```json
+[
+  {
+    "id": 1,
+    "user_id": 101,
+    "age": 25,
+    "height": 170.5,
+    "weight": 65.3,
+    "fats": 18.2
+  },
+  {
+    "id": 2,
+    "user_id": 102,
+    "age": 30,
+    "height": 165.0,
+    "weight": 70.0,
+    "fats": 20.0
+  }
+]
+```
+
+## Get Metrics by User ID
+
+- Path
+
+```http
+GET /metrics/:user_id
+```
+
+- Headers
+
+```http
+Authorization: Bearer <access_token>
+```
+
+- Response
+
+```javascript
+{
+  "id": int,
+  "user_id": int,
+  "age": int,
+  "height": float,
+  "weight": float,
+  "fats": float
+}
+```
+
+- Example Response
+
+```json
+{
+  "id": 1,
+  "user_id": 101,
+  "age": 25,
+  "height": 170.5,
+  "weight": 65.3,
+  "fats": 18.2
+}
+```

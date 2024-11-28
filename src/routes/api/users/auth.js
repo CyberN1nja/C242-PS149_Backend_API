@@ -247,14 +247,13 @@ router.delete('/auth/logout', (req, res) => {
 
 // Delete Account (Hapus Akun Pengguna)
 router.delete('/users/delete', authenticate, (req, res) => {
-  const userId = req.userId;
-  const { refreshToken } = req.body;
+  const userId = req.userId; // Ambil userId dari middleware authenticate
 
-  if (!userId || !refreshToken) {
+  if (!userId) {
     return res.status(400).json({
       error: true,
       status: 'failure',
-      message: 'User ID atau Refresh token tidak ditemukan dalam permintaan.',
+      message: 'User ID tidak ditemukan dalam token.',
     });
   }
 
@@ -270,8 +269,8 @@ router.delete('/users/delete', authenticate, (req, res) => {
     }
 
     // Hapus refresh token terkait terlebih dahulu
-    const deleteTokenQuery = 'DELETE FROM refresh_tokens WHERE token = ? AND user_id = ?';
-    db.query(deleteTokenQuery, [refreshToken, userId], (err, result) => {
+    const deleteTokenQuery = 'DELETE FROM refresh_tokens WHERE user_id = ?';
+    db.query(deleteTokenQuery, [userId], (err, result) => {
       if (err) {
         console.error('Error menghapus refresh token:', err);
         return db.rollback(() => {
@@ -279,16 +278,6 @@ router.delete('/users/delete', authenticate, (req, res) => {
             error: true,
             status: 'failure',
             message: 'Error menghapus refresh token.',
-          });
-        });
-      }
-
-      if (result.affectedRows === 0) {
-        return db.rollback(() => {
-          res.status(404).json({
-            error: true,
-            status: 'failure',
-            message: 'Refresh token tidak ditemukan.',
           });
         });
       }
