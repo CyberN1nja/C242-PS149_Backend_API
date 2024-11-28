@@ -593,7 +593,7 @@ GET /user_foods
 
 - Path
 
-```
+```http
 GET /user_foods/:food_id
 ```
 
