@@ -6,7 +6,7 @@ const router = express.Router();
 const db = require('../../../db');
 
 // POST: Menambahkan data baru
-router.post('/metrics', authenticate, (req, res) => {
+router.post('/user', authenticate, (req, res) => {
   const { age, height, weight, fats } = req.body;
   const userId = req.userId; // Gunakan req.userId untuk akses userId dari middleware
 
@@ -27,7 +27,7 @@ router.post('/metrics', authenticate, (req, res) => {
 });
 
 // GET: Mengambil semua data
-router.get('/metrics/all', (req, res) => {
+router.get('/all', (req, res) => {
   const query = 'SELECT * FROM user_physical_metrics';
 
   // Menjalankan query untuk mengambil semua data
@@ -51,7 +51,7 @@ router.get('/metrics/all', (req, res) => {
 
 
 // GET: Mengambil data berdasarkan user_id
-router.get('/metrics/:user_id', authenticate, (req, res) => {
+router.get('/:user_id', authenticate, (req, res) => {
   const userId = req.params.user_id; // Ambil user_id dari parameter URL
   const query = 'SELECT * FROM user_physical_metrics WHERE user_id = ?';
 

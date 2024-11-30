@@ -4,6 +4,7 @@ const userAuth = require('./routes/api/users/auth');
 const hMatRoutes = require('./routes/api/users_metrics/hMatRoutes'); // Impor rute
 const foodRoutes = require('./routes/api/foods/foods');
 const pointRoutes = require('./routes/api/point/point');
+const articleRoutes = require('./routes/api/article/article');
 
 const app = express();
 app.use(express.json()); // Untuk parsing JSON body
@@ -31,11 +32,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.use('/', userAuth);
-app.use('/', userRoutes);
-app.use('/', hMatRoutes);
-app.use('/', foodRoutes);
-app.use('/', pointRoutes);
+app.use('/auth', userAuth);
+app.use('/users', userRoutes);
+app.use('/metrics', hMatRoutes);
+app.use('/food', foodRoutes);
+app.use('/points', pointRoutes);
+app.use('/articles', articleRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

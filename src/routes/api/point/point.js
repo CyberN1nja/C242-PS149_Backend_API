@@ -2,14 +2,13 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const authenticate = require('../users/authMiddleware');
-const db = require('../../../db'); // Konfigurasi database
-require('dotenv').config(); // Memuat variabel lingkungan dari .env
+const db = require('../../../db'); 
 const router = express.Router();
 
 /**
  * GET /user_points - Mendapatkan semua entri poin
  */
-router.get('/user_points', (req, res) => {
+router.get('/user', (req, res) => {
   const query = 'SELECT * FROM user_poin';
   db.query(query, (err, results) => {
     if (err) {
@@ -22,7 +21,7 @@ router.get('/user_points', (req, res) => {
 /**
  * GET /user_points/:user_id - Mendapatkan semua poin berdasarkan user_id
  */
-router.get('/user_points/:user_id', (req, res) => {
+router.get('/:user_id', (req, res) => {
   const { user_id } = req.params;
   const query = 'SELECT * FROM user_poin WHERE user_id = ?';
   db.query(query, [user_id], (err, results) => {
@@ -33,10 +32,8 @@ router.get('/user_points/:user_id', (req, res) => {
   });
 });
 
-/**
- * GET /user_points/total/:user_id - Mendapatkan total poin berdasarkan user_id
- */
-router.get('/user_points/total/:user_id', (req, res) => {
+
+router.get('/total/:user_id', (req, res) => {
   const { user_id } = req.params;
   const query = 'SELECT SUM(points) AS total_points FROM user_poin WHERE user_id = ?';
   db.query(query, [user_id], (err, results) => {
@@ -50,7 +47,7 @@ router.get('/user_points/total/:user_id', (req, res) => {
 /**
  * POST /user_points - Menambahkan poin untuk pengguna
  */
-router.post('/user_points', authenticate, (req, res) => {
+router.post('/user', authenticate, (req, res) => {
   const { points, reason } = req.body;
   const user_id = req.userId; // Ambil userId yang didekodekan dari token
 
@@ -71,7 +68,7 @@ router.post('/user_points', authenticate, (req, res) => {
 /**
  * PUT /user_points/:id - Memperbarui entri poin berdasarkan id
  */
-router.put('/user_points/:user_id', (req, res) => {
+router.put('/:user_id', (req, res) => {
   const { user_id } = req.params; // Menggunakan user_id dari params
   const { points, reason } = req.body;
 
@@ -98,7 +95,7 @@ router.put('/user_points/:user_id', (req, res) => {
 /**
  * DELETE /user_points/:id - Menghapus entri poin berdasarkan id
  */
-router.delete('/user_points/:user_id', (req, res) => {
+router.delete('/:user_id', (req, res) => {
   const { user_id } = req.params; // Mengambil parameter user_id dari URL
 
   const query = 'DELETE FROM user_poin WHERE user_id = ?'; // Menggunakan user_id untuk filter

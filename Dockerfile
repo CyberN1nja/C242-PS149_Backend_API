@@ -23,3 +23,5 @@ CMD ["npm", "start"]
 # docker run -p 3000:3000 catloris1:1 (mejalankan apliaksi di dalam container doceker)
 # menegecek status container (docker ps)
 # setiap kali menjalankan docker containernya harus di hentikan juga (docker stop <nama_container>)
+
+# docker push asia-southeast2-docker.pkg.dev/catloris-441814/catloris-repo/catloris-app:v1 (jangan lupa push docker ke artifact)

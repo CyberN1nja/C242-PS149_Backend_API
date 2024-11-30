@@ -1,10 +1,9 @@
-// routes/user.js
 const express = require('express');
 const db = require('../../../db');
 const router = express.Router();
 
 // Endpoint untuk mengambil semua data user
-router.get('/users', (req, res) => {
+router.get('/all', (req, res) => {
   const query = 'SELECT * FROM users';
 
   db.query(query, (err, results) => {
@@ -18,7 +17,7 @@ router.get('/users', (req, res) => {
 });
 
 // Endpoint untuk mengambil data user berdasarkan ID
-router.get('/user/:id', (req, res) => {
+router.get('/:id', (req, res) => {
   const userId = req.params.id;
   const query = 'SELECT * FROM users WHERE user_id = ?';
 
@@ -44,7 +43,7 @@ router.get('/user/:id', (req, res) => {
 });
 
 // Endpoint untuk memperbarui data user
-router.put('/user/:id', (req, res) => {
+router.put('/:id', (req, res) => {
   const userId = req.params.id;
   const { image, fullname, email, password, contact, gender } = req.body;
   const query = 'UPDATE users SET image = ?, fullname = ?, email = ?, password = ?, contact = ?, gender = ? WHERE user_id = ?';
@@ -66,7 +65,7 @@ router.put('/user/:id', (req, res) => {
 });
 
 // Endpoint untuk menghapus data user
-router.delete('/user/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
   const userId = req.params.id;
   const query = 'DELETE FROM users WHERE user_id = ?';
 
@@ -86,7 +85,7 @@ router.delete('/user/:id', (req, res) => {
   });
 });
 
-router.delete('/users', (req, res) => {
+router.delete('/delete', (req, res) => {
   const query = 'DELETE FROM users'; // Menghapus seluruh data di tabel users
 
   db.query(query, (err, result) => {

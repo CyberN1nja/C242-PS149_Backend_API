@@ -1,6 +1,5 @@
 const express = require('express');
 const db = require('../../../db'); // Koneksi database
-require('dotenv').config();
 
 const router = express.Router();
 
@@ -8,7 +7,7 @@ const router = express.Router();
  * GET all user foods
  * Endpoint: GET /user_foods
  */
-router.get('/user_foods', (req, res) => {
+router.get('/user', (req, res) => {
   const query = 'SELECT * FROM user_foods';
 
   db.query(query, (err, results) => {
@@ -32,13 +31,13 @@ router.get('/user_foods', (req, res) => {
  * GET user food by ID
  * Endpoint: GET /user_foods/:food_id
  */
-router.get('/user_foods/:food_id', (req, res) => {
-  const { food_id } = req.params;
-  const query = 'SELECT * FROM user_foods WHERE food_id = ?';
+router.get('/:user_id', (req, res) => {
+  const userId = req.params.user_id; // Ambil user_id dari parameter URL
+  const query = 'SELECT * FROM user_foods WHERE user_id = ?'; // Gunakan user_id dalam query
 
-  db.query(query, [food_id], (err, results) => {
+  db.query(query, [userId], (err, results) => {
     if (err) {
-      console.error('Error fetching user food by ID:', err);
+      console.error('Error fetching user food by user_id:', err);
       return res.status(500).json({
         error: true,
         message: 'Internal server error',
@@ -48,23 +47,24 @@ router.get('/user_foods/:food_id', (req, res) => {
     if (results.length === 0) {
       return res.status(404).json({
         error: true,
-        message: 'User food not found',
+        message: 'No foods found for the specified user_id',
       });
     }
 
     res.status(200).json({
       error: false,
-      message: 'User food fetched successfully',
-      data: results[0],
+      message: 'User foods fetched successfully',
+      data: results, // Mengembalikan semua makanan untuk user_id
     });
   });
 });
+
 
 /**
  * POST a new user food
  * Endpoint: POST /user_foods
  */
-router.post('/user_foods', (req, res) => {
+router.post('/user', (req, res) => {
   const { user_id, food_name, calories, protein, fats, crabs } = req.body;
 
   if (!user_id || !food_name || !calories || !protein || !fats || !crabs) {

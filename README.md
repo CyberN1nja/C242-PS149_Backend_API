@@ -4,7 +4,7 @@
 
 - Prodaction
 
-```http
+```
 https://catloris-app-748662833244.asia-southeast2.run.app
 ```
 
@@ -142,16 +142,10 @@ GET /auth/profile
 
 - Headers
 
-> go to Headers then enter the key and value (Authorization as key and Bearer (access_token) as value)
+> go to Headers then enter the key and value (Authorization as key and Bearer (access_token) as value) <access_token> from previos login
 
 ```http
 Authorization: Bearer <access_token>
-```
-
-```json
-{
-  "refreshToken": "........eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
-}
 ```
 
 - Response

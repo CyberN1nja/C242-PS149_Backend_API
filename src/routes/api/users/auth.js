@@ -1,16 +1,17 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../../../.env') });
 const authenticate = require('./authMiddleware');
 const db = require('../../../db');
-require('dotenv').config(); 
 const router = express.Router();
 
 // Kunci rahasia untuk JWT
 const SECRET_KEY = process.env.SECRET_KEY;
 
 // Registrasi User (Membuat akun baru) REGISTER
-router.post('/users/register', async (req, res) => {
+router.post('/register', async (req, res) => {
   const { user_id, image, fullname, email, password, contact, gender } = req.body;
 
   try {
@@ -37,24 +38,28 @@ router.post('/users/register', async (req, res) => {
 });
 
 // Login User (Mendapatkan token setelah login) LOGIN
-router.post('/auth/login', (req, res) => {
+// Endpoint untuk login
+router.post('/login', (req, res) => {
   const { email, password } = req.body;
 
+  // Mencari pengguna berdasarkan email
   const query = 'SELECT * FROM users WHERE email = ?';
-  db.query(query, [email], async (err, results) => {
+  db.query(query, [email], async (err, result) => {
     if (err) {
-      console.error('Error mengambil pengguna:', err);
-      return res.status(500).json({ error: true, status: 'failure', message: 'Error mengambil pengguna 500.' });
+      console.error('Error mencari pengguna:', err);
+      return res.status(500).json({ error: true, message: 'Terjadi kesalahan pada server.' });
     }
 
-    if (results.length === 0) {
-      return res.status(404).json({ error: true, status: 'failure', message: 'User tidak ditemukan 404.' });
+    if (result.length === 0) {
+      return res.status(404).json({ error: true, message: 'Pengguna tidak ditemukan.' });
     }
 
-    const user = results[0];
+    const user = result[0];
+
+    // Membandingkan password yang diberikan dengan password yang tersimpan (hash)
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ error: true, status: 'failure', message: 'Kredensial tidak valid 401.' });
+      return res.status(401).json({ error: true, message: 'Password salah.' });
     }
 
     // Membuat Access Token (berlaku selama 1 jam)
@@ -63,14 +68,18 @@ router.post('/auth/login', (req, res) => {
     // Membuat Refresh Token (berlaku selama 7 hari)
     const refreshToken = jwt.sign({ userId: user.user_id, email: user.email }, SECRET_KEY, { expiresIn: '7d' });
 
+    // Mendapatkan waktu kedaluwarsa (7 hari dari sekarang)
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);  // 7 hari dalam milidetik
+
     // Menyimpan Refresh Token ke database
-    const insertTokenQuery = 'INSERT INTO refresh_tokens (user_id, token) VALUES (?, ?)';
-    db.query(insertTokenQuery, [user.user_id, refreshToken], (err, result) => {
+    const insertTokenQuery = 'INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES (?, ?, ?)';
+    db.query(insertTokenQuery, [user.user_id, refreshToken, expiresAt], (err, result) => {
       if (err) {
         console.error('Error menyimpan refresh token:', err);
         return res.status(500).json({ error: true, message: 'Error menyimpan refresh token.' });
       }
 
+      // Mengirimkan response sukses dengan accessToken dan refreshToken
       res.status(200).json({
         error: false,
         message: 'Login berhasil!',
@@ -80,27 +89,23 @@ router.post('/auth/login', (req, res) => {
   });
 });
 
-// lihat profile user
-router.get('/users/profile', authenticate, (req, res) => {
-  const userId = req.userId; // userId diperoleh dari middleware `authenticate`
+// Endpoint untuk melihat profil user dengan autentikasi
+router.get('/profile', authenticate, (req, res) => {
+  const userId = req.userId; // userId diambil dari token yang telah diverifikasi
+
+  if (!userId) {
+    return res.status(400).json({ error: true, message: 'User ID tidak ditemukan dalam token.' });
+  }
 
   const query = 'SELECT user_id, image, fullname, email, contact, gender FROM users WHERE user_id = ?';
   db.query(query, [userId], (err, results) => {
     if (err) {
-      console.error('Error mengambil data profil:', err);
-      return res.status(500).json({
-        error: true,
-        status: 'failure',
-        message: 'Error mengambil data profil.',
-      });
+      console.error('Database query error:', err);
+      return res.status(500).json({ error: true, message: 'Error mengambil data profil.' });
     }
 
     if (results.length === 0) {
-      return res.status(404).json({
-        error: true,
-        status: 'failure',
-        message: 'Profil pengguna tidak ditemukan.',
-      });
+      return res.status(404).json({ error: true, message: 'Profil pengguna tidak ditemukan.' });
     }
 
     res.status(200).json({
@@ -112,8 +117,8 @@ router.get('/users/profile', authenticate, (req, res) => {
   });
 });
 
-// Update Profil User
-router.put('/users/update', authenticate, (req, res) => {
+// Update Profile User
+router.put('/update', authenticate, (req, res) => {
   const userId = req.userId; // userId diperoleh dari middleware `authenticate`
   const { image, fullname, email, contact, gender } = req.body;
 
@@ -159,7 +164,7 @@ router.put('/users/update', authenticate, (req, res) => {
 });
 
 // Update Access Token (Perbarui Token Akses) Menggunakan Refresh Token
-router.put('/auth', (req, res) => {
+router.put('/refresh', (req, res) => {
   const { refreshToken } = req.body;
 
   // Validasi input refresh token
@@ -193,8 +198,9 @@ router.put('/auth', (req, res) => {
   });
 });
 
+
 // Logout (Hapus Refresh Token)
-router.delete('/auth/logout', (req, res) => {
+router.delete('/logout', (req, res) => {
   const { refreshToken } = req.body;
 
   if (!refreshToken) {
@@ -246,7 +252,7 @@ router.delete('/auth/logout', (req, res) => {
 
 
 // Delete Account (Hapus Akun Pengguna)
-router.delete('/users/delete', authenticate, (req, res) => {
+router.delete('/delete', authenticate, (req, res) => {
   const userId = req.userId; // Ambil userId dari middleware authenticate
 
   if (!userId) {

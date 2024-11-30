@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-require('dotenv').config(); // Menggunakan .env untuk menyimpan SECRET_KEY
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../../../.env') });
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
