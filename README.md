@@ -5,7 +5,7 @@
 - Prodaction
 
 ```
-https://catloris-app-748662833244.asia-southeast2.run.app
+https://c242-ps149-backend-api-748662833244.us-central1.run.app
 ```
 
 - Development
@@ -21,7 +21,7 @@ http://localhost:3000/
 - Path
 
 ```http
-POST /users/register
+POST /auth/register
 ```
 
 - Body Request
@@ -85,7 +85,7 @@ POST /users/register
 - Path
 
 ```http
-POST /auth/users
+POST /auth/login
 ```
 
 - Body Request
@@ -189,7 +189,7 @@ Authorization: Bearer <access_token>
 - Path
 
 ```http
-PUT /users
+PUT /auth/update
 ```
 
 - Headers
@@ -249,7 +249,7 @@ Authorization: Bearer <access_token>
 - Path
 
 ```http
-PUT /auth
+PUT /auth/refresh
 ```
 
 - Body Request
@@ -345,7 +345,7 @@ DELETE /auth/logout
 - Path
 
 ```http
-DELETE /users/delete
+DELETE /auth/delete
 ```
 
 > delete acount not delete refresh token, so please send request to delete refresh token also to logout after delete account
@@ -389,7 +389,7 @@ Authorization: Bearer <access_token>
 - Path
 
 ```http
-POST /metrics
+POST /metrics/user
 ```
 
 - Headers
@@ -531,7 +531,7 @@ Authorization: Bearer <access_token>
 - Path
 
 ```http
-GET /user_foods
+GET /food/user
 ```
 
 - Response
@@ -588,7 +588,7 @@ GET /user_foods
 - Path
 
 ```http
-GET /user_foods/:food_id
+GET /food/:user_id
 ```
 
 - Response
@@ -632,7 +632,7 @@ GET /user_foods/:food_id
 - Path
 
 ```http
-POST /user_foods
+POST /food/user
 ```
 
 - Request
@@ -704,7 +704,7 @@ POST /user_foods
 - Path
 
 ```http
-GET /user_points
+GET /points/user
 ```
 
 - Response
@@ -750,16 +750,12 @@ GET /user_points
 - Path 
 
 ```http
-GET /user_points/:user_id
+GET /points/:user_id
 ```
 
 - Request
 
 > To display data based on the id
-
-```http
-GET /user_points/1
-```
 
 - Response
 
@@ -798,13 +794,7 @@ GET /user_points/1
 - Path
 
 ```http
-GET /user_points/total/:user_id
-```
-
-- Request
-
-```http
-GET /user_points/total/1 
+GET /points/total/:user_id
 ```
 
 - Response
@@ -815,9 +805,15 @@ GET /user_points/total/1
 }
 ```
 
-## POST User Points Auth
+## POST User Points 
 
 > Adds points for already authenticated users.
+
+- Path
+
+```http
+POST /points/user
+```
 
 - Request
 
@@ -825,7 +821,7 @@ GET /user_points/total/1
 Authorization: Bearer <accessToken>
 ```
 
-- Body 
+- Body
 
 ```javascript
 {
@@ -834,7 +830,7 @@ Authorization: Bearer <accessToken>
 }
 ```
 
-- Example Body 
+- Example Body
 
 ```javascript
 {
@@ -850,7 +846,7 @@ Authorization: Bearer <accessToken>
 - Path
 
 ```http
-PUT /user_points/:user_id
+PUT /points/:user_id
 ```
 
 - Request
@@ -898,7 +894,7 @@ Authorization: Bearer <accessToken>
 - Path
 
 ```http
-DELETE /user_points/:user_id
+DELETE /points/:user_id
 ```
 
 - Request

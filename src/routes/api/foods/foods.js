@@ -59,7 +59,6 @@ router.get('/:user_id', (req, res) => {
   });
 });
 
-
 /**
  * POST a new user food
  * Endpoint: POST /user_foods

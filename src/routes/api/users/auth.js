@@ -56,7 +56,6 @@ router.post('/login', (req, res) => {
 
     const user = result[0];
 
-    // Membandingkan password yang diberikan dengan password yang tersimpan (hash)
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({ error: true, message: 'Password salah.' });

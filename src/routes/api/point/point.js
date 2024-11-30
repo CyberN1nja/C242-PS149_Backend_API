@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const authenticate = require('../users/authMiddleware');
-const db = require('../../../db'); 
+const db = require('../../../db');
 const router = express.Router();
 
 /**
@@ -31,7 +31,6 @@ router.get('/:user_id', (req, res) => {
     res.status(200).json(results);
   });
 });
-
 
 router.get('/total/:user_id', (req, res) => {
   const { user_id } = req.params;
@@ -66,7 +65,7 @@ router.post('/user', authenticate, (req, res) => {
 });
 
 /**
- * PUT /user_points/:id - Memperbarui entri poin berdasarkan id
+ Memperbarui entri poin berdasarkan id
  */
 router.put('/:user_id', (req, res) => {
   const { user_id } = req.params; // Menggunakan user_id dari params
