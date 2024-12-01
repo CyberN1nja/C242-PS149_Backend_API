@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../../../.env') });
-const authenticate = require('./authMiddleware');
+const authenticate = require('../middleware/authMiddleware');
 const db = require('../../../db');
 const router = express.Router();
 
@@ -68,7 +68,7 @@ router.post('/login', (req, res) => {
     const refreshToken = jwt.sign({ userId: user.user_id, email: user.email }, SECRET_KEY, { expiresIn: '7d' });
 
     // Mendapatkan waktu kedaluwarsa (7 hari dari sekarang)
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);  // 7 hari dalam milidetik
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 hari dalam milidetik
 
     // Menyimpan Refresh Token ke database
     const insertTokenQuery = 'INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES (?, ?, ?)';
@@ -197,7 +197,6 @@ router.put('/refresh', (req, res) => {
   });
 });
 
-
 // Logout (Hapus Refresh Token)
 router.delete('/logout', (req, res) => {
   const { refreshToken } = req.body;
@@ -249,8 +248,6 @@ router.delete('/logout', (req, res) => {
   });
 });
 
-
-// Delete Account (Hapus Akun Pengguna)
 router.delete('/delete', authenticate, (req, res) => {
   const userId = req.userId; // Ambil userId dari middleware authenticate
 
@@ -301,47 +298,77 @@ router.delete('/delete', authenticate, (req, res) => {
           });
         }
 
-        // Hapus akun pengguna setelah data fisik dihapus
-        const deleteUserQuery = 'DELETE FROM users WHERE user_id = ?';
-        db.query(deleteUserQuery, [userId], (err, result) => {
+        // Hapus data dari tabel user_point yang terkait dengan user_id
+        const deleteUserPointsQuery = 'DELETE FROM user_poin WHERE user_id = ?';
+        db.query(deleteUserPointsQuery, [userId], (err, result) => {
           if (err) {
-            console.error('Error menghapus akun:', err);
+            console.error('Error menghapus data poin pengguna:', err);
             return db.rollback(() => {
               res.status(500).json({
                 error: true,
                 status: 'failure',
-                message: 'Error menghapus akun.',
+                message: 'Error menghapus data poin pengguna.',
               });
             });
           }
 
-          if (result.affectedRows === 0) {
-            return db.rollback(() => {
-              res.status(404).json({
-                error: true,
-                status: 'failure',
-                message: 'Akun tidak ditemukan.',
-              });
-            });
-          }
-
-          // Commit transaksi jika semua berhasil
-          db.commit((err) => {
+          // Hapus data dari tabel user_foods yang terkait dengan user_id
+          const deleteUserFoodsQuery = 'DELETE FROM user_foods WHERE user_id = ?';
+          db.query(deleteUserFoodsQuery, [userId], (err, result) => {
             if (err) {
-              console.error('Error melakukan commit:', err);
+              console.error('Error menghapus data makanan pengguna:', err);
               return db.rollback(() => {
                 res.status(500).json({
                   error: true,
                   status: 'failure',
-                  message: 'Error menyelesaikan transaksi.',
+                  message: 'Error menghapus data makanan pengguna.',
                 });
               });
             }
 
-            res.status(200).json({
-              error: false,
-              status: 'success',
-              message: 'Akun dan data terkait berhasil dihapus.',
+            // Hapus akun pengguna setelah data terkait dihapus
+            const deleteUserQuery = 'DELETE FROM users WHERE user_id = ?';
+            db.query(deleteUserQuery, [userId], (err, result) => {
+              if (err) {
+                console.error('Error menghapus akun:', err);
+                return db.rollback(() => {
+                  res.status(500).json({
+                    error: true,
+                    status: 'failure',
+                    message: 'Error menghapus akun.',
+                  });
+                });
+              }
+
+              if (result.affectedRows === 0) {
+                return db.rollback(() => {
+                  res.status(404).json({
+                    error: true,
+                    status: 'failure',
+                    message: 'Akun tidak ditemukan.',
+                  });
+                });
+              }
+
+              // Commit transaksi jika semua berhasil
+              db.commit((err) => {
+                if (err) {
+                  console.error('Error melakukan commit:', err);
+                  return db.rollback(() => {
+                    res.status(500).json({
+                      error: true,
+                      status: 'failure',
+                      message: 'Error menyelesaikan transaksi.',
+                    });
+                  });
+                }
+
+                res.status(200).json({
+                  error: false,
+                  status: 'success',
+                  message: 'Akun dan data terkait berhasil dihapus.',
+                });
+              });
             });
           });
         });

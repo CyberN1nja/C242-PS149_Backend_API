@@ -5,7 +5,7 @@
 - Prodaction
 
 ```
-https://c242-ps149-backend-api-748662833244.us-central1.run.app
+https://c242-ps149-backend-api-748662833244.asia-southeast2.run.app
 ```
 
 - Development
@@ -515,7 +515,6 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "id": 1,
   "user_id": 101,
   "age": 25,
   "height": 170.5,
@@ -568,7 +567,7 @@ GET /food/user
       "calories": 200,
       "protein": 25,
       "fats": 5,
-      "crabs": 0
+      "crabs": 21
     },
     {
       "food_id": 2,
@@ -635,11 +634,16 @@ GET /food/:user_id
 POST /food/user
 ```
 
+- Headers
+
+```http
+Authorization: Bearer <access_token>
+```
+
 - Request
 
 ``` javascript
 {
-    "user_id": int,
     "food_name": string,
     "calories": decimal,
     "protein": decimal,
@@ -657,7 +661,7 @@ POST /food/user
   "calories": 208,
   "protein": 20,
   "fats": 13,
-  "crabs": 0
+  "crabs": 20
 }
 ```
 

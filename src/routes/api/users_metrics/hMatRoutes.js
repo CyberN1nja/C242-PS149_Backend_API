@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const authenticate = require('../users/authMiddleware');
+const authenticate = require('../middleware/authMiddleware');
 const router = express.Router();
 const db = require('../../../db');
 
@@ -48,7 +48,6 @@ router.get('/all', (req, res) => {
     return res.status(200).json(results);
   });
 });
-
 
 // GET: Mengambil data berdasarkan user_id
 router.get('/:user_id', authenticate, (req, res) => {

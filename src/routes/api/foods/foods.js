@@ -1,12 +1,11 @@
 const express = require('express');
-const db = require('../../../db'); // Koneksi database
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const authenticate = require('../middleware/authMiddleware');
+const db = require('../../../db');
 
 const router = express.Router();
 
-/**
- * GET all user foods
- * Endpoint: GET /user_foods
- */
 router.get('/user', (req, res) => {
   const query = 'SELECT * FROM user_foods';
 
@@ -27,10 +26,6 @@ router.get('/user', (req, res) => {
   });
 });
 
-/**
- * GET user food by ID
- * Endpoint: GET /user_foods/:food_id
- */
 router.get('/:user_id', (req, res) => {
   const userId = req.params.user_id; // Ambil user_id dari parameter URL
   const query = 'SELECT * FROM user_foods WHERE user_id = ?'; // Gunakan user_id dalam query
@@ -59,17 +54,14 @@ router.get('/:user_id', (req, res) => {
   });
 });
 
-/**
- * POST a new user food
- * Endpoint: POST /user_foods
- */
-router.post('/user', (req, res) => {
-  const { user_id, food_name, calories, protein, fats, crabs } = req.body;
+router.post('/user', authenticate, (req, res) => {
+  const { food_name, calories, protein, fats, crabs } = req.body;
+  const userId = req.userId; // Ambil user_id dari middleware authenticate
 
-  if (!user_id || !food_name || !calories || !protein || !fats || !crabs) {
+  if (!food_name || !calories || !protein || !fats || !crabs) {
     return res.status(400).json({
       error: true,
-      message: 'All fields (user_id, food_name, calories, protein, fats, crabs) are required',
+      message: 'All fields (food_name, calories, protein, fats, crabs) are required',
     });
   }
 
@@ -77,7 +69,7 @@ router.post('/user', (req, res) => {
     INSERT INTO user_foods (user_id, food_name, calories, protein, fats, crabs)
     VALUES (?, ?, ?, ?, ?, ?)
   `;
-  const values = [user_id, food_name, calories, protein, fats, crabs];
+  const values = [userId, food_name, calories, protein, fats, crabs];
 
   db.query(query, values, (err, results) => {
     if (err) {
@@ -93,7 +85,7 @@ router.post('/user', (req, res) => {
       message: 'User food added successfully',
       data: {
         food_id: results.insertId,
-        user_id,
+        user_id: userId,
         food_name,
         calories,
         protein,

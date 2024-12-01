@@ -1,7 +1,7 @@
 const express = require('express');
-const userRoutes = require('./routes/api/users/userRotes'); // Impor rute
-const userAuth = require('./routes/api/users/auth');
-const hMatRoutes = require('./routes/api/users_metrics/hMatRoutes'); // Impor rute
+const userRoutes = require('./routes/api/users/userCRUD'); 
+const userAuth = require('./routes/api/users/authRoutes');
+const hMatRoutes = require('./routes/api/users_metrics/hMatRoutes'); 
 const foodRoutes = require('./routes/api/foods/foods');
 const pointRoutes = require('./routes/api/point/point');
 const articleRoutes = require('./routes/api/article/article');
