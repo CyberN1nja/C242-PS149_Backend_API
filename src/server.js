@@ -1,10 +1,10 @@
 const express = require('express');
 const userRoutes = require('./routes/api/users/userCRUD'); 
 const userAuth = require('./routes/api/users/authRoutes');
-const hMatRoutes = require('./routes/api/users_metrics/hMatRoutes'); 
-const foodRoutes = require('./routes/api/foods/foods');
-const pointRoutes = require('./routes/api/point/point');
-const articleRoutes = require('./routes/api/article/article');
+const hMatRoutes = require('./routes/api/users_metrics/matricsRoutes'); 
+const foodRoutes = require('./routes/api/foods/foodsRoutes');
+const pointRoutes = require('./routes/api/point/pointRoutes');
+const articleRoutes = require('./routes/api/article/articleRoutes');
 
 const app = express();
 app.use(express.json()); // Untuk parsing JSON body
