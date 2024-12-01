@@ -49,25 +49,44 @@ router.get('/all', (req, res) => {
   });
 });
 
-// GET: Mengambil data berdasarkan user_id
-router.get('/:user_id', authenticate, (req, res) => {
-  const userId = req.params.user_id; // Ambil user_id dari parameter URL
+// GET: Mengambil data berdasarkan autentikasi
+router.get('/user', authenticate, (req, res) => {
+  const userId = req.userId; // Ambil user_id dari middleware authenticate
   const query = 'SELECT * FROM user_physical_metrics WHERE user_id = ?';
 
   db.query(query, [userId], (err, results) => {
     if (err) {
       console.error('Error mengambil data:', err);
-      res.status(500).send('Error mengambil data');
-      return;
+      return res.status(500).send('Error mengambil data');
     }
 
     if (results.length === 0) {
-      res.status(404).send('User tidak ditemukan');
-      return;
+      return res.status(404).send('User tidak ditemukan');
     }
 
     res.status(200).json(results[0]);
   });
 });
+
+router.delete('/delete', authenticate, (req, res) => {
+  const userId = req.userId; // Ambil user_id dari middleware authenticate
+
+  const query = 'DELETE FROM user_physical_metrics WHERE user_id = ?';
+
+  db.query(query, [userId], (err, result) => {
+    if (err) {
+      console.error('Error menghapus data:', err);
+      return res.status(500).send('Error menghapus data');
+    }
+
+    // Cek apakah ada data yang terhapus
+    if (result.affectedRows === 0) {
+      return res.status(404).send('Data tidak ditemukan untuk dihapus');
+    }
+
+    res.status(200).send('Data berhasil dihapus');
+  });
+});
+
 
 module.exports = router;

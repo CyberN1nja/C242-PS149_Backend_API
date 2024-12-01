@@ -5,9 +5,6 @@ const authenticate = require('../middleware/authMiddleware');
 const db = require('../../../db');
 const router = express.Router();
 
-/**
- * GET /user_points - Mendapatkan semua entri poin
- */
 router.get('/user', (req, res) => {
   const query = 'SELECT * FROM user_poin';
   db.query(query, (err, results) => {
@@ -18,9 +15,7 @@ router.get('/user', (req, res) => {
   });
 });
 
-/**
- * GET /user_points/:user_id - Mendapatkan semua poin berdasarkan user_id
- */
+
 router.get('/:user_id', (req, res) => {
   const { user_id } = req.params;
   const query = 'SELECT * FROM user_poin WHERE user_id = ?';
@@ -43,9 +38,7 @@ router.get('/total/:user_id', (req, res) => {
   });
 });
 
-/**
- * POST /user_points - Menambahkan poin untuk pengguna
- */
+
 router.post('/user', authenticate, (req, res) => {
   const { points, reason } = req.body;
   const user_id = req.userId; // Ambil userId yang didekodekan dari token
@@ -64,11 +57,8 @@ router.post('/user', authenticate, (req, res) => {
   });
 });
 
-/**
- Memperbarui entri poin berdasarkan id
- */
-router.put('/:user_id', (req, res) => {
-  const { user_id } = req.params; // Menggunakan user_id dari params
+router.put('/user', authenticate, (req, res) => {
+  const user_id = req.userId; // Ambil userId yang didekodekan dari token
   const { points, reason } = req.body;
 
   if (!points || !reason) {
@@ -84,20 +74,17 @@ router.put('/:user_id', (req, res) => {
 
     // Cek apakah ada data yang terpengaruh
     if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'No point entry found for the specified user_id' });
+      return res.status(404).json({ error: 'No point entry found for the authenticated user' });
     }
 
     res.status(200).json({ message: 'Point updated successfully' });
   });
 });
 
-/**
- * DELETE /user_points/:id - Menghapus entri poin berdasarkan id
- */
-router.delete('/:user_id', (req, res) => {
-  const { user_id } = req.params; // Mengambil parameter user_id dari URL
+router.delete('/delete', authenticate, (req, res) => {
+  const user_id = req.userId; // Ambil userId yang didekodekan dari token
 
-  const query = 'DELETE FROM user_poin WHERE user_id = ?'; // Menggunakan user_id untuk filter
+  const query = 'DELETE FROM user_poin WHERE user_id = ?'; // Menggunakan user_id yang sudah didapat dari token
   db.query(query, [user_id], (err, result) => {
     if (err) {
       return res.status(500).json({ error: 'Database error', details: err });
@@ -105,7 +92,7 @@ router.delete('/:user_id', (req, res) => {
 
     // Jika tidak ada data yang terhapus
     if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'Point not found for the specified user_id' });
+      return res.status(404).json({ error: 'Point not found for the authenticated user' });
     }
 
     res.status(200).json({ message: 'Point deleted successfully' });

@@ -438,7 +438,7 @@ Authorization: Bearer <access_token>
 }
 ```
 
-## Get All Metrics
+## Get All User Metrics
 
 - Path
 
@@ -484,12 +484,51 @@ GET /metrics/all
 ]
 ```
 
-## Get Metrics By User ID
+## Get User Metrics
 
 - Path
 
 ```http
-GET /metrics/:user_id
+GET /metrics/user
+```
+
+- Headers
+
+```http
+Authorization: Bearer <access_token>
+```
+
+- Response
+
+```javascript
+{
+  "id": int,
+  "user_id": int,
+  "age": int,
+  "height": float,
+  "weight": float,
+  "fats": float
+}
+```
+
+- Example Response
+
+```json
+{
+  "user_id": 101,
+  "age": 25,
+  "height": 170.5,
+  "weight": 65.3,
+  "fats": 18.2
+}
+```
+
+## DELETE User Metrics
+
+- Path
+
+```http
+GET /metrics/delete
 ```
 
 - Headers
@@ -547,7 +586,8 @@ GET /food/user
       "calories": float,
       "protein": float,
       "fats": float,
-      "crabs": float
+      "crabs": float,
+      "created_at": datetime
     }
   ]
 }
@@ -582,12 +622,18 @@ GET /food/user
 }
 ```
 
-## GET User Food By ID
+## GET User Food 
 
 - Path
 
 ```http
-GET /food/:user_id
+GET /food/user
+```
+
+- Headers
+
+```http
+Authorization: Bearer <access_token>
 ```
 
 - Response
@@ -604,6 +650,7 @@ GET /food/:user_id
     "protein": float,
     "fats": float,
     "crabs": float
+    "created_at": datetime
   }
 }
 ```
@@ -612,17 +659,20 @@ GET /food/:user_id
 
 ```json
 {
-  "error": false,
-  "message": "User food fetched successfully",
-  "data": {
-    "food_id": 1,
-    "user_id": 101,
-    "food_name": "Grilled Chicken",
-    "calories": 200,
-    "protein": 25,
-    "fats": 5,
-    "crabs": 0
-  }
+    "error": false,
+    "message": "User foods fetched successfully",
+    "data": [
+        {
+            "food_id": 8,
+            "user_id": 7,
+            "food_name": "Salmon",
+            "calories": 208,
+            "protein": 20,
+            "fats": 13,
+            "crabs": 21,
+            "created_at": "2024-12-01T00:47:24.000Z"
+        }
+    ]
 }
 ```
 
@@ -678,7 +728,8 @@ Authorization: Bearer <access_token>
     "calories": float,
     "protein": float,
     "fats": float,
-    "crabs": float
+    "crabs": float,
+    "created_at": datetime
   }
 }
 ```
@@ -687,19 +738,24 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-  "error": false,
-  "message": "User food added successfully",
-  "data": {
-    "food_id": 3,
-    "user_id": 101,
-    "food_name": "Salmon",
-    "calories": 208,
-    "protein": 20,
-    "fats": 13,
-    "crabs": 0
-  }
+    "error": false,
+    "message": "User food added successfully",
+    "data": {
+        "food_id": 8,
+        "user_id": 7,
+        "food_name": "Salmon",
+        "calories": 208,
+        "protein": 20,
+        "fats": 13,
+        "crabs": 21,
+        "created_at": "2024-12-01T00:47:24.000Z"
+    }
 }
 ```
+
+## Delete User Foods
+
+
 
 # User Point
 
@@ -809,7 +865,7 @@ GET /points/total/:user_id
 }
 ```
 
-## POST User Points 
+## POST User Points
 
 > Adds points for already authenticated users.
 
@@ -819,13 +875,13 @@ GET /points/total/:user_id
 POST /points/user
 ```
 
-- Request
+- Headers
 
 ```http
 Authorization: Bearer <accessToken>
 ```
 
-- Body
+- Request
 
 ```javascript
 {
@@ -834,41 +890,59 @@ Authorization: Bearer <accessToken>
 }
 ```
 
-- Example Body
+- Example Request
 
 ```javascript
 {
-  "message": "Point added successfully",
-  "insertId": 3
+  "points": 100,
+  "reason": "Well done !!!"
+}
+```
+
+- Response
+
+```json
+{
+    "message": string,
+    "insertId": int
+}
+```
+
+- Example Response
+
+```json
+{
+    "message": "Point added successfully",
+    "insertId": 7
 }
 ```
 
 ## PUT User Point By ID
 
-> Updates point entries based on user_id.
+> Updates point entries based on Authorization.
 
 - Path
 
 ```http
-PUT /points/:user_id
+PUT /points/user
 ```
 
-- Request
+- Headers
 
 ```http
 Authorization: Bearer <accessToken>
 ```
 
-- Body
+- Request
 
 ```javascript
 {
   "points": int,
-  "reason": varchar
+  "reason": string
 }
 ```
 
-- Example Body
+- Example Request
 
 ```json
 {
@@ -893,18 +967,18 @@ Authorization: Bearer <accessToken>
 }
 ```
 
-## DELETE User By ID
+## DELETE Point
 
 - Path
 
 ```http
-DELETE /points/:user_id
+DELETE /points/delete
 ```
 
-- Request
+- Headers
 
 ```http
-Authorization: Bearer <jwt_token>
+Authorization: Bearer <accessToken>
 ```
 
 - Response 
@@ -920,5 +994,156 @@ Authorization: Bearer <jwt_token>
 ```javascript
 {
   "message": "Point deleted successfully"
+}
+```
+
+# Public Article
+
+## Create Article
+
+- Path 
+
+```http
+POST /articles/health
+```
+
+- Response
+
+```javascript
+{
+  "title": string,
+  "content": string,
+  "image_url": varchar
+}
+```
+
+- Example Response
+
+```json
+{
+  "title": "Article Title",
+  "content": "Article Content",
+  "image_url": "http://example.com/image.jpg"
+}
+```
+
+## Get All Article
+
+- Path
+
+```http
+GET /articles/health
+```
+
+- Request
+
+```javascript
+{
+  "error": bool,
+  "message": string,
+  "data": [
+    {
+      "article_id": int,
+      "title": varchar,
+      "content": varchar,
+      "published_date": datetime,
+      "image_url": varchar
+    }
+  ]
+}
+```
+
+- Example Request
+
+```javascript
+{
+  "error": false,
+  "message": "Artikel berhasil diambil.",
+  "data": [
+    {
+      "article_id": 1,
+      "title": "Article 1",
+      "content": "Content for article 1",
+      "published_date": "2024-12-01 12:00:00",
+      "image_url": "http://example.com/article1.jpg"
+    },
+    {
+      "article_id": 2,
+      "title": "Article 2",
+      "content": "Content for article 2",
+      "published_date": "2024-12-01 12:00:00",
+      "image_url": "http://example.com/article2.jpg"
+    }
+  ]
+}
+```
+
+
+## Get Article By ID
+
+- Path 
+
+```http
+GET /articles/:article_id
+```
+
+- Response 
+
+```json
+{
+  "error": false,
+  "message": "Artikel berhasil diambil.",
+  "data": {
+    "article_id": 1,
+    "title": "Article 1",
+    "content": "Content for article 1",
+    "published_date": "2024-12-01 12:00:00",
+    "image_url": "http://example.com/article1.jpg"
+  }
+}
+```
+
+## Update Article By ID
+
+- Path 
+
+```http
+PUT /articles/:article_id
+```
+
+- Request
+
+```json
+{
+  "title": "Updated Title",
+  "content": "Updated Content",
+  "published_date": "2024-12-01T12:00:00",
+  "image_url": "http://example.com/updated_image.jpg"
+}
+```
+
+- Response
+
+```json
+{
+  "error": false,
+  "message": "Artikel berhasil diperbarui."
+}
+```
+
+## Delete Article By ID
+
+- Path 
+
+```http
+DELETE /articles/:article_id
+```
+
+- Response
+
+```json
+{
+  "error": false,
+  "message": "Artikel berhasil dihapus."
 }
 ```

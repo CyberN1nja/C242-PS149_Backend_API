@@ -6,6 +6,7 @@ const db = require('../../../db');
 
 const router = express.Router();
 
+// GET semua makanan pengguna (admin route)
 router.get('/user', (req, res) => {
   const query = 'SELECT * FROM user_foods';
 
@@ -26,9 +27,11 @@ router.get('/user', (req, res) => {
   });
 });
 
-router.get('/:user_id', (req, res) => {
-  const userId = req.params.user_id; // Ambil user_id dari parameter URL
-  const query = 'SELECT * FROM user_foods WHERE user_id = ?'; // Gunakan user_id dalam query
+// GET makanan pengguna berdasarkan autentikasi
+router.get('/user', authenticate, (req, res) => {
+  const userId = req.userId;
+
+  const query = 'SELECT * FROM user_foods WHERE user_id = ? ORDER BY created_at DESC';
 
   db.query(query, [userId], (err, results) => {
     if (err) {
@@ -42,21 +45,22 @@ router.get('/:user_id', (req, res) => {
     if (results.length === 0) {
       return res.status(404).json({
         error: true,
-        message: 'No foods found for the specified user_id',
+        message: 'No foods found for the specified user',
       });
     }
 
     res.status(200).json({
       error: false,
       message: 'User foods fetched successfully',
-      data: results, // Mengembalikan semua makanan untuk user_id
+      data: results,
     });
   });
 });
 
+// POST makanan pengguna
 router.post('/user', authenticate, (req, res) => {
   const { food_name, calories, protein, fats, crabs } = req.body;
-  const userId = req.userId; // Ambil user_id dari middleware authenticate
+  const userId = req.userId;
 
   if (!food_name || !calories || !protein || !fats || !crabs) {
     return res.status(400).json({
@@ -80,18 +84,51 @@ router.post('/user', authenticate, (req, res) => {
       });
     }
 
-    res.status(201).json({
+    // Fetch the newly inserted record to include `created_at`
+    const fetchQuery = 'SELECT * FROM user_foods WHERE food_id = ?';
+    db.query(fetchQuery, [results.insertId], (fetchErr, fetchResults) => {
+      if (fetchErr) {
+        console.error('Error fetching newly inserted food:', fetchErr);
+        return res.status(500).json({
+          error: true,
+          message: 'Internal server error',
+        });
+      }
+
+      res.status(201).json({
+        error: false,
+        message: 'User food added successfully',
+        data: fetchResults[0],
+      });
+    });
+  });
+});
+
+// DELETE semua makanan pengguna berdasarkan autentikasi
+router.delete('/user', authenticate, (req, res) => {
+  const userId = req.userId;
+
+  const deleteQuery = 'DELETE FROM user_foods WHERE user_id = ?';
+
+  db.query(deleteQuery, [userId], (err, result) => {
+    if (err) {
+      console.error('Error deleting user food:', err);
+      return res.status(500).json({
+        error: true,
+        message: 'Internal server error',
+      });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        error: true,
+        message: 'No food found for the specified user or you do not have permission to delete it',
+      });
+    }
+
+    res.status(200).json({
       error: false,
-      message: 'User food added successfully',
-      data: {
-        food_id: results.insertId,
-        user_id: userId,
-        food_name,
-        calories,
-        protein,
-        fats,
-        crabs,
-      },
+      message: 'User food deleted successfully',
     });
   });
 });
