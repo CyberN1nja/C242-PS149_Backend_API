@@ -901,7 +901,7 @@ Authorization: Bearer <accessToken>
 
 - Response
 
-```json
+```javascript
 {
     "message": string,
     "insertId": int
