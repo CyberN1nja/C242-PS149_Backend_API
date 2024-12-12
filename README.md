@@ -528,7 +528,7 @@ Authorization: Bearer <access_token>
 - Path
 
 ```http
-GET /metrics/delete
+DELETE /metrics/delete
 ```
 
 - Headers
