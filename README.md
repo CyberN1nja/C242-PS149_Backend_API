@@ -123,12 +123,12 @@ POST /auth/login
 
 ```json
 {
-    "error": false,
-    "message": "Login berhasil!",
-    "data": {
-        "accessToken": "........eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
-        "refreshToken": ".......eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
-    }
+  "error": false,
+  "message": "Login berhasil!",
+  "data": {
+    "accessToken": "........eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+    "refreshToken": ".......eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+  }
 }
 ```
 
@@ -373,12 +373,12 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-    "error": false,
-    "status": "success",
-    "message": "User berhasil ditambahkan 201.",
-    "data": {
-        "userId": "1"
-    }
+  "error": false,
+  "status": "success",
+  "message": "User berhasil ditambahkan 201.",
+  "data": {
+    "userId": "1"
+  }
 }
 ```
 
@@ -411,7 +411,7 @@ Authorization: Bearer <access_token>
 
 - Example Body Request
 
-``` json
+```json
 {
   "age": 25,
   "height": 170.5,
@@ -451,14 +451,14 @@ GET /metrics/all
 ```javascript
 [
   {
-    "id": int,
-    "user_id": int,
-    "age": int,
-    "height": float,
-    "weight": float,
-    "fats": float
-  }
-]
+    id: int,
+    user_id: int,
+    age: int,
+    height: float,
+    weight: float,
+    fats: float,
+  },
+];
 ```
 
 - Example Response
@@ -622,7 +622,7 @@ GET /food/user
 }
 ```
 
-## GET User Food 
+## GET User Food
 
 - Path
 
@@ -659,20 +659,20 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-    "error": false,
-    "message": "User foods fetched successfully",
-    "data": [
-        {
-            "food_id": 8,
-            "user_id": 7,
-            "food_name": "Salmon",
-            "calories": 208,
-            "protein": 20,
-            "fats": 13,
-            "crabs": 21,
-            "created_at": "2024-12-01T00:47:24.000Z"
-        }
-    ]
+  "error": false,
+  "message": "User foods fetched successfully",
+  "data": [
+    {
+      "food_id": 8,
+      "user_id": 7,
+      "food_name": "Salmon",
+      "calories": 208,
+      "protein": 20,
+      "fats": 13,
+      "crabs": 21,
+      "created_at": "2024-12-01T00:47:24.000Z"
+    }
+  ]
 }
 ```
 
@@ -692,7 +692,7 @@ Authorization: Bearer <access_token>
 
 - Request
 
-``` javascript
+```javascript
 {
     "food_name": string,
     "calories": decimal,
@@ -704,7 +704,7 @@ Authorization: Bearer <access_token>
 
 - Example Request
 
-``` javascript
+```javascript
 {
   "user_id": 1,
   "food_name": "Salmon",
@@ -738,18 +738,18 @@ Authorization: Bearer <access_token>
 
 ```json
 {
-    "error": false,
-    "message": "User food added successfully",
-    "data": {
-        "food_id": 8,
-        "user_id": 7,
-        "food_name": "Salmon",
-        "calories": 208,
-        "protein": 20,
-        "fats": 13,
-        "crabs": 21,
-        "created_at": "2024-12-01T00:47:24.000Z"
-    }
+  "error": false,
+  "message": "User food added successfully",
+  "data": {
+    "food_id": 8,
+    "user_id": 7,
+    "food_name": "Salmon",
+    "calories": 208,
+    "protein": 20,
+    "fats": 13,
+    "crabs": 21,
+    "created_at": "2024-12-01T00:47:24.000Z"
+  }
 }
 ```
 
@@ -767,7 +767,7 @@ DELETE /food/delete
 Authorization: Bearer <accessToken>
 ```
 
-- Response 
+- Response
 
 ```javascript
 {
@@ -775,7 +775,7 @@ Authorization: Bearer <accessToken>
 }
 ```
 
-- Example Response 
+- Example Response
 
 ```javascript
 {
@@ -798,14 +798,14 @@ GET /points/user
 ```javascript
 [
   {
-    "id": int,
-    "user_id": int,
-    "points": int,
-    "reason": varchar,
-    "created_at": datetime,
-    "updated_at": datetime
-  }
-]
+    id: int,
+    user_id: int,
+    points: int,
+    reason: varchar,
+    created_at: datetime,
+    updated_at: datetime,
+  },
+];
 ```
 
 - Example Response
@@ -833,13 +833,11 @@ GET /points/user
 
 ## GET User Point By ID
 
-- Path 
+- Path
 
 ```http
 GET /points/:user_id
 ```
-
-- Request
 
 > To display data based on the id
 
@@ -848,14 +846,14 @@ GET /points/:user_id
 ```javascript
 [
   {
-    "id": int,
-    "user_id": int,
-    "points": int,
-    "reason": varchar,
-    "created_at": datetime,
-    "updated_at": datetime
-  }
-]
+    id: int,
+    user_id: int,
+    points: int,
+    reason: varchar,
+    created_at: datetime,
+    updated_at: datetime,
+  },
+];
 ```
 
 - Example Response
@@ -938,8 +936,8 @@ Authorization: Bearer <accessToken>
 
 ```json
 {
-    "message": "Point added successfully",
-    "insertId": 7
+  "message": "Point added successfully",
+  "insertId": 7
 }
 ```
 
@@ -987,7 +985,7 @@ Authorization: Bearer <accessToken>
 
 - Example Response
 
-```json 
+```json
 {
   "message": "Point updated successfully"
 }
@@ -1007,7 +1005,7 @@ DELETE /points/delete
 Authorization: Bearer <accessToken>
 ```
 
-- Response 
+- Response
 
 ```javascript
 {
@@ -1015,7 +1013,7 @@ Authorization: Bearer <accessToken>
 }
 ```
 
-- Example Response 
+- Example Response
 
 ```javascript
 {
@@ -1027,13 +1025,13 @@ Authorization: Bearer <accessToken>
 
 ## Create Article
 
-- Path 
+- Path
 
 ```http
 POST /articles/health
 ```
 
-- Response
+- Request
 
 ```javascript
 {
@@ -1043,14 +1041,35 @@ POST /articles/health
 }
 ```
 
+- Example Request
+
+```json
+{
+  "title": "Manfaat Olahraga untuk Kesehatan Mental",
+  "content": "Olahraga memiliki berbagai manfaat untuk kesehatan mental, seperti mengurangi stres dan meningkatkan suasana hati.",
+  "image_url": "https://example.com/image.jpg"
+}
+```
+
+- Response
+
+```javascript
+{
+  "error": bool,
+  "message": string,
+  "article_id": int
+}
+```
+
 - Example Response
 
 ```json
 {
-  "title": "Article Title",
-  "content": "Article Content",
-  "image_url": "http://example.com/image.jpg"
+  "error": false,
+  "message": "Artikel berhasil dibuat.",
+  "article_id": 1
 }
+
 ```
 
 ## Get All Article
@@ -1104,16 +1123,15 @@ GET /articles/health
 }
 ```
 
-
 ## Get Article By ID
 
-- Path 
+- Path
 
 ```http
 GET /articles/:article_id
 ```
 
-- Response 
+- Response
 
 ```json
 {
@@ -1131,7 +1149,7 @@ GET /articles/:article_id
 
 ## Update Article By ID
 
-- Path 
+- Path
 
 ```http
 PUT /articles/:article_id
@@ -1159,7 +1177,7 @@ PUT /articles/:article_id
 
 ## Delete Article By ID
 
-- Path 
+- Path
 
 ```http
 DELETE /articles/:article_id

@@ -15,7 +15,6 @@ router.get('/user', (req, res) => {
   });
 });
 
-
 router.get('/:user_id', (req, res) => {
   const { user_id } = req.params;
   const query = 'SELECT * FROM user_poin WHERE user_id = ?';
@@ -37,7 +36,6 @@ router.get('/total/:user_id', (req, res) => {
     res.status(200).json(results[0]); // Mengembalikan total poin
   });
 });
-
 
 router.post('/user', authenticate, (req, res) => {
   const { points, reason } = req.body;
