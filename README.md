@@ -753,9 +753,35 @@ Authorization: Bearer <access_token>
 }
 ```
 
-## Delete User Foods
+## Delete User Food
 
+- Path
 
+```http
+DELETE /food/delete
+```
+
+- Headers
+
+```http
+Authorization: Bearer <accessToken>
+```
+
+- Response 
+
+```javascript
+{
+  "message": string
+}
+```
+
+- Example Response 
+
+```javascript
+{
+  "message": "Data berhasil dihapus"
+}
+```
 
 # User Point
 
