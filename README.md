@@ -1,3 +1,13 @@
+![banner_CC](https://i.ibb.co.com/74Zvr9C/catloris-logo.png)
+
+# Catloris - Cloud Computing
+
+Hello, this is Cloud Computing part of Catloris application made by Capstone Team C242-PS149 ✨
+
+## Our Cloud Architecture
+
+![Architecture_CC](https://github.com/C242-PS149/.github/blob/main/assets/Arsitektur%20cloud.drawio.png)
+
 # TrackMate API Documentation
 
 # Endpoint
@@ -1023,7 +1033,7 @@ Authorization: Bearer <accessToken>
 
 # Public Article
 
-## Create Article
+## Post Article
 
 - Path
 
@@ -1080,7 +1090,7 @@ POST /articles/health
 GET /articles/health
 ```
 
-- Request
+- Response
 
 ```javascript
 {
@@ -1098,7 +1108,7 @@ GET /articles/health
 }
 ```
 
-- Example Request
+- Example Response
 
 ```javascript
 {
